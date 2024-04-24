@@ -10,7 +10,7 @@ class LeaderBoard:
 
     def create_leader_board(self, player):
         # El jugador tiene que tener un nombre para ser agregado al leaderboard
-        if not player.get_name() is None:
+        if not player.get_player_info() is None:
             if os.path.isfile(self.leaderboard_file_name_path) == False:
                 tmpdict = {}
                 # Crea el archivo de leaderboard vacío
@@ -18,7 +18,7 @@ class LeaderBoard:
 
     def read_leader_board(self, player):
         # Escribe en el leaderboard si el jugador ha proporcionado su nombre y el archivo existe
-        if not player.get_name() is None:
+        if not player.get_player_info() is None:
             if os.path.isfile(self.leaderboard_file_name_path):
                 leaderboard = json.load(open(self.leaderboard_file_name_path))
                 leaderboard = dict(
@@ -56,7 +56,7 @@ class LeaderBoard:
                 leaderboard_dicc[MAX_PLAYERS] = {'NameCountry': player.get_country(),
                                                  'HighestScore': player.get_score()}
                 # Se ordenan nuevamente el leaderboard
-                leaderboard = dict(
+                leaderboard_dicc = dict(
                     sorted(leaderboard_dicc.items(), key=lambda item: item[1]['HighestScore'],
                            reverse=True))  # sort desc
         else:

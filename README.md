@@ -31,3 +31,72 @@ El proyecto tiene la siguiente estructura de directorios:
 1. Intente correr el proyecto, identifique el script que inicia la interacción y ejecute el compato streamlit run `nombre.py`
 2. Debe ver algo como lo siguiente ![img.png](docs/img/ejecucion_poo_template.png)
 3. Inicie la migración iniciando por el radio button de las dificultades
+
+
+## Diagrama del proyecto
+```mermaid
+PixelPOO
+    class GameController {
+        -selected_difficulty
+        -current_player
+        -emojis_bank
+        -target_emoji
+        -game_status
+        -board
+        +define_player()
+        +pick_emoji_bank()
+        +find_target_emoji()
+        +reset_board()
+        +verify_game_status()
+        +play()
+    }
+    class GUIController {
+        -game_controller
+        -run_page
+        +main()
+        +read_picture_file()
+        +verify_pressed_cell()
+    }
+    class Board {
+        -cells_map
+        -expired_cells_list
+        +update_cell()
+        +reset_board()
+    }
+    class BoardCell {
+        -cell_idx
+        -verification_result
+        -row = 0
+        -col = 0
+        -emoji_img
+        -emoji_index 
+    }
+    class LeaderBoardManager {
+        +create_leader_board(player)
+        +read_leader_board(player)
+        +update_leader_board(player, MAX_PLAYERS)()
+    }
+    class Player {
+        +name
+        +country
+        +score
+    }
+    class MainView {
+        +draw_main_page()
+    }
+    class App {
+        +main()
+    }
+    GUIController ..> GameController : uses
+    Board <-- GameController : has
+    Board o-- BoardCell : has
+    GameController --> Player : has
+    GameController --> LeaderBoardManager : uses
+    LeaderBoardManager ..> Player : usesa
+    MainView ..> GameController : uses
+    GUIController ..> MainView : uses
+    App ..> GUIController : launches
+
+```
+Editor:https://diagrams.helpful.dev/s/s:MAdFfNUs
+![img.png](docs/classes.png)
