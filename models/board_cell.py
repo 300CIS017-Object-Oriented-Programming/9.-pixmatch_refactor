@@ -10,7 +10,7 @@ class BoardCell:
     # Constructor que recibe todos los parametros de la clse
     def __int__(self, id, row, col, emoji_index):
         self.id = id
-        self.__verification_result = False # Inicialmente no se ha verificado si hay coincidencia
+        self.__verification_result = False  # Inicialmente no se ha verificado si hay coincidencia
         self.__row = row
         self.col = col
         self.emoji_img = ''
@@ -34,9 +34,12 @@ class BoardCell:
 
     def get_id(self):
         return self.id
+
     def get_row(self):
         return self.__row
+
     def get_col(self):
         return self.col
+
     def get_emoji_img(self):
         return self.emoji_img

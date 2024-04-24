@@ -1,20 +1,21 @@
 """
 Esta versión del código incorpora los ajustes para guardar cuatro jugadores y para perder y la documentacion del codigo
 """
-import streamlit as st
-import os
-import time as tm
-import random
 import base64
 import json
+import os
+import random
+import time as tm
+
+import streamlit as st
 from PIL import Image
 from streamlit_autorefresh import st_autorefresh
 
-st.set_page_config(page_title = "PixMatch", page_icon="🕹️", layout = "wide", initial_sidebar_state = "expanded")
+st.set_page_config(page_title="PixMatch", page_icon="🕹️", layout="wide", initial_sidebar_state="expanded")
 
 vDrive = os.path.splitdrive(os.getcwd())[0]
-#if vDrive == "C:": vpth = "C:/Users/Shawn/dev/utils/pixmatch/"   # local developer's disc
-#else:
+# if vDrive == "C:": vpth = "C:/Users/Shawn/dev/utils/pixmatch/"   # local developer's disc
+# else:
 
 # Ruta relativa a la carpeta donde se tiene el código fuente y se ejecutará el programa.
 ruta_en_disco = "./"
@@ -47,10 +48,10 @@ pressed_emoji = """<span style='font-size: 24px;
                                 |fill_variable|
                                 </span>"""
 
-#Devuelve una barra horizontal HTML para usar en la separación de secciones en la interfaz del juego.
-horizontal_bar = "<hr style='margin-top: 0; margin-bottom: 0; height: 1px; border: 1px solid #635985;'><br>"    # thin divider line
+# Devuelve una barra horizontal HTML para usar en la separación de secciones en la interfaz del juego.
+horizontal_bar = "<hr style='margin-top: 0; margin-bottom: 0; height: 1px; border: 1px solid #635985;'><br>"  # thin divider line
 
-#Define los estilos CSS para los botones utilizados en la interfaz del juego."""
+# Define los estilos CSS para los botones utilizados en la interfaz del juego."""
 purple_btn_colour = """
                         <style>
                             div.stButton > button:first-child {background-color: #4b0082; color:#ffffff;}
@@ -59,20 +60,22 @@ purple_btn_colour = """
                         </style>
                     """
 
-#Inicializa o reinicia las variables del estado del juego almacenadas en el estado de sesión de Streamlit.
+# Inicializa o reinicia las variables del estado del juego almacenadas en el estado de sesión de Streamlit.
 mystate = st.session_state
-if "expired_cells" not in mystate: mystate.expired_cells = [] #   Lista de celdas que se han presionado
-if "cont_failed_cells" not in mystate: mystate.cont_failed_cells = 0 # Contador de celdas fallidas incrementa cuando falla
+if "expired_cells" not in mystate: mystate.expired_cells = []  # Lista de celdas que se han presionado
+if "cont_failed_cells" not in mystate: mystate.cont_failed_cells = 0  # Contador de celdas fallidas incrementa cuando falla
 if "myscore" not in mystate: mystate.myscore = 0
 if "plyrbtns" not in mystate: mystate.plyrbtns = {}
 if "sidebar_emoji" not in mystate: mystate.sidebar_emoji = ''
 if "emoji_bank" not in mystate: mystate.emoji_bank = []
 # Configuración inicial del juego
-if "GameDetails" not in mystate: mystate.GameDetails = ['Medium', 6, 7, '']  # difficulty level, sec interval for autogen, total_cells_per_row_or_col, player name
-if "max_players_in_top" not in mystate: mystate.max_players_in_top = 4 # cantidad de jugadores en el top a mostrar
+if "GameDetails" not in mystate: mystate.GameDetails = ['Medium', 6, 7,
+                                                        '']  # difficulty level, sec interval for autogen, total_cells_per_row_or_col, player name
+if "max_players_in_top" not in mystate: mystate.max_players_in_top = 4  # cantidad de jugadores en el top a mostrar
+
 
 # common functions
-def ReduceGapFromPageTop(wch_section = 'main page'):
+def ReduceGapFromPageTop(wch_section='main page'):
     """
     Ajusta el margen superior en las secciones específicas de la interfaz de usuario de Streamlit.
 
@@ -101,7 +104,8 @@ def ReduceGapFromPageTop(wch_section = 'main page'):
         # Ajusta el espacio tanto en la página principal como en la barra lateral
         st.markdown(" <style> div[class^='block-container'] { padding-top: 2rem; } </style> ", True)
         st.markdown(" <style> div[class^='st-emotion-cache-10oheav'] { padding-top: 0rem; } </style> ", True)
-    
+
+
 def Leaderboard(what_to_do):
     """
      Administra las operaciones del tablero de líderes, incluyendo crear, escribir y leer el archivo de puntuaciones altas.
@@ -122,34 +126,37 @@ def Leaderboard(what_to_do):
         if mystate.GameDetails[3] != '':
             if os.path.isfile(ruta_en_disco + 'leaderboard.json') == False:
                 tmpdict = {}
-                json.dump(tmpdict, open(ruta_en_disco + 'leaderboard.json', 'w'))     # write file
+                json.dump(tmpdict, open(ruta_en_disco + 'leaderboard.json', 'w'))  # write file
 
     elif what_to_do == 'write':
         # Escribe en el leaderboard si el jugador ha proporcionado su nombre y el archivo existe
-        if mystate.GameDetails[3] != '':       # record in leaderboard only if player name is provided
+        if mystate.GameDetails[3] != '':  # record in leaderboard only if player name is provided
             if os.path.isfile(ruta_en_disco + 'leaderboard.json'):
-                leaderboard = json.load(open(ruta_en_disco + 'leaderboard.json'))    # read file
+                leaderboard = json.load(open(ruta_en_disco + 'leaderboard.json'))  # read file
                 leaderboard_dict_lngth = len(leaderboard)
-                    
-                leaderboard[str(leaderboard_dict_lngth + 1)] = {'NameCountry': mystate.GameDetails[3], 'HighestScore': mystate.myscore}
-                leaderboard = dict(sorted(leaderboard.items(), key=lambda item: item[1]['HighestScore'], reverse=True))  # sort desc
 
-                if len(leaderboard) > mystate.max_players_in_top: # Cantidad de jugadores del top a mostrar
-                    for i in range(len(leaderboard)-mystate.max_players_in_top):
-                        leaderboard.popitem()    # retira los jugadores adicionales del top
+                leaderboard[str(leaderboard_dict_lngth + 1)] = {'NameCountry': mystate.GameDetails[3],
+                                                                'HighestScore': mystate.myscore}
+                leaderboard = dict(
+                    sorted(leaderboard.items(), key=lambda item: item[1]['HighestScore'], reverse=True))  # sort desc
 
-                json.dump(leaderboard, open(ruta_en_disco + 'leaderboard.json', 'w'))     # write file
+                if len(leaderboard) > mystate.max_players_in_top:  # Cantidad de jugadores del top a mostrar
+                    for i in range(len(leaderboard) - mystate.max_players_in_top):
+                        leaderboard.popitem()  # retira los jugadores adicionales del top
+
+                json.dump(leaderboard, open(ruta_en_disco + 'leaderboard.json', 'w'))  # write file
 
     elif what_to_do == 'read':
         # Lee y muestra el leaderboard si el archivo existe y el jugador ha proporcionado su nombre
-        if mystate.GameDetails[3] != '':       # record in leaderboard only if player name is provided
+        if mystate.GameDetails[3] != '':  # record in leaderboard only if player name is provided
             if os.path.isfile(ruta_en_disco + 'leaderboard.json'):
-                leaderboard = json.load(open(ruta_en_disco + 'leaderboard.json'))    # read file
+                leaderboard = json.load(open(ruta_en_disco + 'leaderboard.json'))  # read file
 
                 # Ordenar el leaderboard por puntaje más alto
-                leaderboard = dict(sorted(leaderboard.items(), key=lambda item: item[1]['HighestScore'], reverse=True))  # sort desc
+                leaderboard = dict(
+                    sorted(leaderboard.items(), key=lambda item: item[1]['HighestScore'], reverse=True))  # sort desc
 
-                sc0, sc1, sc2, sc3, sc4 = st.columns((1,3,3,3,3))  # Columnas para mostrar los primeros 4 jugadores
+                sc0, sc1, sc2, sc3, sc4 = st.columns((1, 3, 3, 3, 3))  # Columnas para mostrar los primeros 4 jugadores
                 rknt = 0
                 for key in leaderboard:
                     rknt += 1
@@ -160,8 +167,9 @@ def Leaderboard(what_to_do):
                         sc2.write(f"🥈 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
                     elif rknt == 3:
                         sc3.write(f"🥉 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
-                    elif rknt == 4: # Jugador adicional en el top 4
+                    elif rknt == 4:  # Jugador adicional en el top 4
                         sc4.write(f"🥉 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
+
 
 def InitialPage():
     """Configura y muestra la página inicial del juego, incluyendo la barra lateral y las reglas del juego."""
@@ -188,7 +196,8 @@ def InitialPage():
     # Configuración de columnas para mostrar las reglas del juego y una imagen de ayuda
     sc1, sc2 = st.columns(2)
     random.seed()
-    game_help_image_path = ruta_en_disco + random.choice(["MainImg1.jpg", "MainImg2.jpg", "MainImg3.jpg", "MainImg4.jpg"])
+    game_help_image_path = ruta_en_disco + random.choice(
+        ["MainImg1.jpg", "MainImg2.jpg", "MainImg3.jpg", "MainImg4.jpg"])
     game_help_image = Image.open(game_help_image_path).resize((550, 550))
     sc2.image(game_help_image, use_column_width='auto')
 
@@ -201,6 +210,7 @@ def InitialPage():
     author_details = "<strong>Happy  play: 😎 Shawn Pereira: shawnpereira1969@gmail.com</strong>"
     st.markdown(author_details, unsafe_allow_html=True)
 
+
 def ReadPictureFile(wch_fl):
     """Lee un archivo de imagen y devuelve su contenido codificado en base64."""
     try:
@@ -210,6 +220,7 @@ def ReadPictureFile(wch_fl):
     except Exception as e:
         st.error(f"Error al leer el archivo de imagen: {str(e)}")
         return ""
+
 
 def PressedCheck(vcell):
     """Verifica si un botón de la cuadrícula ha sido presionado y actualiza el estado del juego."""
@@ -230,6 +241,7 @@ def PressedCheck(vcell):
             mystate.plyrbtns[vcell]['isTrueFalse'] = False
             mystate.myscore -= 1  # Penalización por error
             mystate.cont_failed_cells += 1  # Incrementa el contador de celdas fallidas
+
 
 def ResetBoard():
     """
@@ -262,6 +274,7 @@ def ResetBoard():
             selected_cell = random.choice(unpressed_cells)
             mystate.plyrbtns[selected_cell]['eMoji'] = mystate.sidebar_emoji
 
+
 def PreNewGame():
     """
        Prepara el juego para una nueva sesión, inicializando las celdas y los puntajes.
@@ -279,48 +292,75 @@ def PreNewGame():
         2]  # Total de celdas por fila o columna, definido por la dificultad
     mystate.expired_cells = []  # Reinicia la lista de celdas expiradas
     mystate.myscore = 0  # Reinicia el puntaje del jugador
-    mystate.cont_failed_cells = 0 # Reinicia el contador de celdas fallidas
+    mystate.cont_failed_cells = 0  # Reinicia el contador de celdas fallidas
 
     foxes = ['😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾']
-    emojis = ['😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😠', '😳', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤒']
-    humans = ['👶', '👧', '🧒', '👦', '👩', '🧑', '👨', '👩‍🦱', '👨‍🦱', '👩‍🦰', '‍👨', '👱', '👩', '👱', '👩‍', '👨‍🦳', '👩‍🦲', '👵', '🧓', '👴', '👲', '👳'] 
-    foods = ['🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌽', '🥕', '🧄', '🧅', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🦴', '🌭', '🍔', '🍟', '🍕']
+    emojis = ['😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛',
+              '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩',
+              '🥺', '😢', '😠', '😳', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😧', '😮', '😲', '🥱',
+              '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤒']
+    humans = ['👶', '👧', '🧒', '👦', '👩', '🧑', '👨', '👩‍🦱', '👨‍🦱', '👩‍🦰', '‍👨', '👱', '👩', '👱', '👩‍', '👨‍🦳', '👩‍🦲', '👵', '🧓',
+              '👴', '👲', '👳']
+    foods = ['🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬',
+             '🥒', '🌽', '🥕', '🧄', '🧅', '🥔', '🍠', '🥐', '🥯', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓', '🥩', '🍗',
+             '🍖', '🦴', '🌭', '🍔', '🍟', '🍕']
     clocks = ['🕓', '🕒', '🕑', '🕘', '🕛', '🕚', '🕖', '🕙', '🕔', '🕤', '🕠', '🕕', '🕣', '🕞', '🕟', '🕜', '🕢', '🕦']
-    hands = ['🤚', '🖐', '✋', '🖖', '👌', '🤏', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍', '👎', '✊', '👊', '🤛', '🤜', '👏', '🙌', '🤲', '🤝', '🤚🏻', '🖐🏻', '✋🏻', '🖖🏻', '👌🏻', '🤏🏻', '✌🏻', '🤞🏻', '🤟🏻', '🤘🏻', '🤙🏻', '👈🏻', '👉🏻', '👆🏻', '🖕🏻', '👇🏻', '☝🏻', '👍🏻', '👎🏻', '✊🏻', '👊🏻', '🤛🏻', '🤜🏻', '👏🏻', '🙌🏻', '🤚🏽', '🖐🏽', '✋🏽', '🖖🏽', '👌🏽', '🤏🏽', '✌🏽', '🤞🏽', '🤟🏽', '🤘🏽', '🤙🏽', '👈🏽', '👉🏽', '👆🏽', '🖕🏽', '👇🏽', '☝🏽', '👍🏽', '👎🏽', '✊🏽', '👊🏽', '🤛🏽', '🤜🏽', '👏🏽', '🙌🏽']
-    animals = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐽', '🐸', '🐵', '🙈', '🙉', '🙊', '🐒', '🐔', '🐧', '🐦', '🐤', '🐣', '🐥', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐕‍🦺', '🐈', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🐇', '🦝', '🦨', '🦦', '🦥', '🐁', '🐀', '🦔']
-    vehicles = ['🚗', '🚕', '🚙', '🚌', '🚎', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🦯', '🦽', '🦼', '🛴', '🚲', '🛵', '🛺', '🚔', '🚍', '🚘', '🚖', '🚡', '🚠', '🚟', '🚃', '🚋', '🚞', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚊', '🚉', '✈️', '🛫', '🛬', '💺', '🚀', '🛸', '🚁', '🛶', '⛵️', '🚤', '🛳', '⛴', '🚢']
-    houses = ['🏠', '🏡', '🏘', '🏚', '🏗', '🏭', '🏢', '🏬', '🏣', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫', '🏩', '💒', '🏛', '⛪️', '🕌', '🕍', '🛕']
-    purple_signs = ['☮️', '✝️', '☪️', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐', '⛎', '♈️', '♉️', '♊️', '♋️', '♌️', '♍️', '♎️', '♏️', '♐️', '♑️', '♒️', '♓️', '🆔', '🈳']
-    red_signs = ['🈶', '🈚️', '🈸', '🈺', '🈷️', '✴️', '🉐', '㊙️', '㊗️', '🈴', '🈵', '🈹', '🈲', '🅰️', '🅱️', '🆎', '🆑', '🅾️', '🆘', '🚼', '🛑', '⛔️', '📛', '🚫', '🚷', '🚯', '🚳', '🚱', '🔞', '📵', '🚭']
-    blue_signs = ['🚾', '♿️', '🅿️', '🈂️', '🛂', '🛃', '🛄', '🛅', '🚹', '🚺', '🚻', '🚮', '🎦', '📶', '🈁', '🔣', '🔤', '🔡', '🔠', '🆖', '🆗', '🆙', '🆒', '🆕', '🆓', '0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', '🔢', '⏏️', '▶️', '⏸', '⏯', '⏹', '⏺', '⏭', '⏮', '⏩', '⏪', '⏫', '⏬', '◀️', '🔼', '🔽', '➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️', '↖️', '↪️', '↩️', '⤴️', '⤵️', '🔀', '🔁', '🔂', '🔄', '🔃', '➿', '🔚', '🔙', '🔛', '🔝', '🔜']
+    hands = ['🤚', '🖐', '✋', '🖖', '👌', '🤏', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍', '👎', '✊', '👊',
+             '🤛', '🤜', '👏', '🙌', '🤲', '🤝', '🤚🏻', '🖐🏻', '✋🏻', '🖖🏻', '👌🏻', '🤏🏻', '✌🏻', '🤞🏻', '🤟🏻', '🤘🏻', '🤙🏻', '👈🏻',
+             '👉🏻', '👆🏻', '🖕🏻', '👇🏻', '☝🏻', '👍🏻', '👎🏻', '✊🏻', '👊🏻', '🤛🏻', '🤜🏻', '👏🏻', '🙌🏻', '🤚🏽', '🖐🏽', '✋🏽', '🖖🏽',
+             '👌🏽', '🤏🏽', '✌🏽', '🤞🏽', '🤟🏽', '🤘🏽', '🤙🏽', '👈🏽', '👉🏽', '👆🏽', '🖕🏽', '👇🏽', '☝🏽', '👍🏽', '👎🏽', '✊🏽', '👊🏽',
+             '🤛🏽', '🤜🏽', '👏🏽', '🙌🏽']
+    animals = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐽', '🐸', '🐵', '🙈', '🙉', '🙊', '🐒', '🐔',
+               '🐧', '🐦', '🐤', '🐣', '🐥', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗',
+               '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆',
+               '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕',
+               '🐩', '🦮', '🐕‍🦺', '🐈', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🐇', '🦝', '🦨', '🦦', '🦥', '🐁', '🐀', '🦔']
+    vehicles = ['🚗', '🚕', '🚙', '🚌', '🚎', '🚓', '🚑', '🚒', '🚐', '🚚', '🚛', '🚜', '🦯', '🦽', '🦼', '🛴', '🚲', '🛵', '🛺', '🚔', '🚍',
+                '🚘', '🚖', '🚡', '🚠', '🚟', '🚃', '🚋', '🚞', '🚝', '🚄', '🚅', '🚈', '🚂', '🚆', '🚇', '🚊', '🚉', '✈️', '🛫', '🛬',
+                '💺', '🚀', '🛸', '🚁', '🛶', '⛵️', '🚤', '🛳', '⛴', '🚢']
+    houses = ['🏠', '🏡', '🏘', '🏚', '🏗', '🏭', '🏢', '🏬', '🏣', '🏤', '🏥', '🏦', '🏨', '🏪', '🏫', '🏩', '💒', '🏛', '⛪️', '🕌', '🕍',
+              '🛕']
+    purple_signs = ['☮️', '✝️', '☪️', '☸️', '✡️', '🔯', '🕎', '☯️', '☦️', '🛐', '⛎', '♈️', '♉️', '♊️', '♋️', '♌️', '♍️',
+                    '♎️', '♏️', '♐️', '♑️', '♒️', '♓️', '🆔', '🈳']
+    red_signs = ['🈶', '🈚️', '🈸', '🈺', '🈷️', '✴️', '🉐', '㊙️', '㊗️', '🈴', '🈵', '🈹', '🈲', '🅰️', '🅱️', '🆎', '🆑', '🅾️', '🆘',
+                 '🚼', '🛑', '⛔️', '📛', '🚫', '🚷', '🚯', '🚳', '🚱', '🔞', '📵', '🚭']
+    blue_signs = ['🚾', '♿️', '🅿️', '🈂️', '🛂', '🛃', '🛄', '🛅', '🚹', '🚺', '🚻', '🚮', '🎦', '📶', '🈁', '🔣', '🔤', '🔡', '🔠', '🆖',
+                  '🆗', '🆙', '🆒', '🆕', '🆓', '0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟',
+                  '🔢', '⏏️', '▶️', '⏸', '⏯', '⏹', '⏺', '⏭', '⏮', '⏩', '⏪', '⏫', '⏬', '◀️', '🔼', '🔽', '➡️', '⬅️', '⬆️',
+                  '⬇️', '↗️', '↘️', '↙️', '↖️', '↪️', '↩️', '⤴️', '⤵️', '🔀', '🔁', '🔂', '🔄', '🔃', '➿', '🔚', '🔙', '🔛',
+                  '🔝', '🔜']
     moon = ['🌕', '🌔', '🌓', '🌗', '🌒', '🌖', '🌑', '🌜', '🌛', '🌙']
 
     random.seed()
     # Selección de categoría de emojis según la dificultad del juego
     if mystate.GameDetails[0] == 'Easy':
         wch_bank = random.choice(['foods', 'moon', 'animals'])
-        #Asignar a mystate.emoji_bank el valor de una variable local cuyo nombre está almacenado en wch_bank
+        # Asignar a mystate.emoji_bank el valor de una variable local cuyo nombre está almacenado en wch_bank
         # locals retorna un diccionario que contiene las variables definidas en el ámbito local donde se ejecuta
         mystate.emoji_bank = locals()[wch_bank]
 
     elif mystate.GameDetails[0] == 'Medium':
-        wch_bank = random.choice(['foxes', 'emojis', 'humans', 'vehicles', 'houses', 'hands', 'purple_signs', 'red_signs', 'blue_signs'])
+        wch_bank = random.choice(
+            ['foxes', 'emojis', 'humans', 'vehicles', 'houses', 'hands', 'purple_signs', 'red_signs', 'blue_signs'])
         mystate.emoji_bank = locals()[wch_bank]
 
     elif mystate.GameDetails[0] == 'Hard':
-        wch_bank = random.choice(['foxes', 'emojis', 'humans', 'foods', 'clocks', 'hands', 'animals', 'vehicles', 'houses', 'purple_signs', 'red_signs', 'blue_signs', 'moon'])
+        wch_bank = random.choice(
+            ['foxes', 'emojis', 'humans', 'foods', 'clocks', 'hands', 'animals', 'vehicles', 'houses', 'purple_signs',
+             'red_signs', 'blue_signs', 'moon'])
         mystate.emoji_bank = locals()[wch_bank]
 
     # Reinicia la información de los botones del juego
     mystate.plyrbtns = {}
-    for vcell in range(1, ((total_cells_per_row_or_col ** 2)+1)):
+    for vcell in range(1, ((total_cells_per_row_or_col ** 2) + 1)):
         # vcell es la clave y corresponde a cada celda individual en la cuadrícula del juego.
 
-        #'isPressed': False: Un booleano que indica si la celda ha sido presionada. Inicialmente, está configurado en False, lo que significa que ninguna celda ha sido tocada al iniciar el juego.
-        #'isTrueFalse': False: True si la acción realizada en esa celda fue correcta, False en caso contrario
-        #'eMoji': '': Una cadena vacía que se usará para almacenar un emoji o símbolo que se mostrará en esa celda. Al inicio, no hay emojis asignados.
+        # 'isPressed': False: Un booleano que indica si la celda ha sido presionada. Inicialmente, está configurado en False, lo que significa que ninguna celda ha sido tocada al iniciar el juego.
+        # 'isTrueFalse': False: True si la acción realizada en esa celda fue correcta, False en caso contrario
+        # 'eMoji': '': Una cadena vacía que se usará para almacenar un emoji o símbolo que se mostrará en esa celda. Al inicio, no hay emojis asignados.
 
         mystate.plyrbtns[vcell] = {'isPressed': False, 'isTrueFalse': False, 'eMoji': ''}
+
 
 def score_emoji():
     """
@@ -352,6 +392,7 @@ def score_emoji():
     elif mystate.myscore > 10:
         return '😁'
 
+
 def is_lost_game(total_cells_per_row_or_col):
     """
     Verifica si el jugador supero su última oportunidad para ganar el juego.
@@ -361,9 +402,10 @@ def is_lost_game(total_cells_per_row_or_col):
     """
     total_cells = total_cells_per_row_or_col ** 2
     if mystate.cont_failed_cells >= (total_cells / 2 + 1):
-       return True
+        return True
     else:
         return False
+
 
 def NewGame():
     """
@@ -381,7 +423,7 @@ def NewGame():
       - Lee el leaderboard para mostrar los puntajes altos y permite al usuario interactuar con el tablero del juego.
       - Maneja la lógica de finalización del juego y transición entre diferentes pantallas de juego.
       """
-    ResetBoard() # Prepara el tablero con nuevos emojis
+    ResetBoard()  # Prepara el tablero con nuevos emojis
     total_cells_per_row_or_col = mystate.GameDetails[2]
 
     ReduceGapFromPageTop('sidebar')
@@ -395,7 +437,8 @@ def NewGame():
         aftimer = st_autorefresh(interval=(mystate.GameDetails[1] * 1000), key="aftmr")
         if aftimer > 0: mystate.myscore -= 1
 
-        st.info(f"{score_emoji()} Score: {mystate.myscore} | Pending: {(total_cells_per_row_or_col ** 2) - len(mystate.expired_cells)}")
+        st.info(
+            f"{score_emoji()} Score: {mystate.myscore} | Pending: {(total_cells_per_row_or_col ** 2) - len(mystate.expired_cells)}")
 
         st.markdown(horizontal_bar, True)
         if st.button(f"🔙 Return to Main Page", use_container_width=True):
@@ -408,23 +451,24 @@ def NewGame():
     st.markdown(horizontal_bar, True)
 
     # Set Board Dafaults
-    st.markdown("<style> div[class^='css-1vbkxwb'] > p { font-size: 1.5rem; } </style> ", unsafe_allow_html=True)  # make button face big
+    st.markdown("<style> div[class^='css-1vbkxwb'] > p { font-size: 1.5rem; } </style> ",
+                unsafe_allow_html=True)  # make button face big
 
     # Configura y muestra los botones del tablero del juego
     #
-    #Configura las columnas para los botones del tablero.
-    #Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
-    #La variable 'tlst' define el espacio de cada columna, y luego se crea un objeto de columna para cada posición.
+    # Configura las columnas para los botones del tablero.
+    # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
+    # La variable 'tlst' define el espacio de cada columna, y luego se crea un objeto de columna para cada posición.
 
     for i in range(1, (total_cells_per_row_or_col + 1)):
         tlst = ([1] * total_cells_per_row_or_col) + [2]  # 2 = espacio al lado derecho
         globals()['cols' + str(i)] = st.columns(tlst)
 
-    #Itera sobre cada celda del tablero, configurando los botones y su comportamiento.
-    #'arr_ref' calcula la referencia de la fila actual basada en la celda y la cantidad de celdas por fila.
+    # Itera sobre cada celda del tablero, configurando los botones y su comportamiento.
+    # 'arr_ref' calcula la referencia de la fila actual basada en la celda y la cantidad de celdas por fila.
     # 'mval' es el índice del primer elemento en la fila actual.
-    #Si un botón está presionado, muestra el resultado de la acción (correcto o incorrecto).
-    #Si no está presionado, muestra el botón para ser seleccionado.
+    # Si un botón está presionado, muestra el resultado de la acción (correcto o incorrecto).
+    # Si no está presionado, muestra el botón para ser seleccionado.
 
     for vcell in range(1, (total_cells_per_row_or_col ** 2) + 1):
 
@@ -432,55 +476,56 @@ def NewGame():
             arr_ref = '1'
             mval = 0
 
-        elif ((total_cells_per_row_or_col * 1)+1) <= vcell <= (total_cells_per_row_or_col * 2):
+        elif ((total_cells_per_row_or_col * 1) + 1) <= vcell <= (total_cells_per_row_or_col * 2):
             arr_ref = '2'
             mval = (total_cells_per_row_or_col * 1)
 
-        elif ((total_cells_per_row_or_col * 2)+1) <= vcell <= (total_cells_per_row_or_col * 3):
+        elif ((total_cells_per_row_or_col * 2) + 1) <= vcell <= (total_cells_per_row_or_col * 3):
             arr_ref = '3'
             mval = (total_cells_per_row_or_col * 2)
 
-        elif ((total_cells_per_row_or_col * 3)+1) <= vcell <= (total_cells_per_row_or_col * 4):
+        elif ((total_cells_per_row_or_col * 3) + 1) <= vcell <= (total_cells_per_row_or_col * 4):
             arr_ref = '4'
             mval = (total_cells_per_row_or_col * 3)
 
-        elif ((total_cells_per_row_or_col * 4)+1) <= vcell <= (total_cells_per_row_or_col * 5):
+        elif ((total_cells_per_row_or_col * 4) + 1) <= vcell <= (total_cells_per_row_or_col * 5):
             arr_ref = '5'
             mval = (total_cells_per_row_or_col * 4)
 
-        elif ((total_cells_per_row_or_col * 5)+1) <= vcell <= (total_cells_per_row_or_col * 6):
+        elif ((total_cells_per_row_or_col * 5) + 1) <= vcell <= (total_cells_per_row_or_col * 6):
             arr_ref = '6'
             mval = (total_cells_per_row_or_col * 5)
 
-        elif ((total_cells_per_row_or_col * 6)+1) <= vcell <= (total_cells_per_row_or_col * 7):
+        elif ((total_cells_per_row_or_col * 6) + 1) <= vcell <= (total_cells_per_row_or_col * 7):
             arr_ref = '7'
             mval = (total_cells_per_row_or_col * 6)
 
-        elif ((total_cells_per_row_or_col * 7)+1) <= vcell <= (total_cells_per_row_or_col * 8):
+        elif ((total_cells_per_row_or_col * 7) + 1) <= vcell <= (total_cells_per_row_or_col * 8):
             arr_ref = '8'
             mval = (total_cells_per_row_or_col * 7)
 
-        elif ((total_cells_per_row_or_col * 8)+1) <= vcell <= (total_cells_per_row_or_col * 9):
+        elif ((total_cells_per_row_or_col * 8) + 1) <= vcell <= (total_cells_per_row_or_col * 9):
             arr_ref = '9'
             mval = (total_cells_per_row_or_col * 8)
 
-        elif ((total_cells_per_row_or_col * 9)+1) <= vcell <= (total_cells_per_row_or_col * 10):
+        elif ((total_cells_per_row_or_col * 9) + 1) <= vcell <= (total_cells_per_row_or_col * 10):
             arr_ref = '10'
             mval = (total_cells_per_row_or_col * 9)
-            
-        globals()['cols' + arr_ref][vcell-mval] = globals()['cols' + arr_ref][vcell-mval].empty()
+
+        globals()['cols' + arr_ref][vcell - mval] = globals()['cols' + arr_ref][vcell - mval].empty()
         if mystate.plyrbtns[vcell]['isPressed'] == True:
             if mystate.plyrbtns[vcell]['isTrueFalse'] == True:
-                globals()['cols' + arr_ref][vcell-mval].markdown(pressed_emoji.replace('|fill_variable|', '✅️'), True)
-            
+                globals()['cols' + arr_ref][vcell - mval].markdown(pressed_emoji.replace('|fill_variable|', '✅️'), True)
+
             elif mystate.plyrbtns[vcell]['isTrueFalse'] == False:
-                globals()['cols' + arr_ref][vcell-mval].markdown(pressed_emoji.replace('|fill_variable|', '❌'), True)
+                globals()['cols' + arr_ref][vcell - mval].markdown(pressed_emoji.replace('|fill_variable|', '❌'), True)
 
         else:
             vemoji = mystate.plyrbtns[vcell]['eMoji']
-            globals()['cols' + arr_ref][vcell-mval].button(vemoji, on_click=PressedCheck, args=(vcell, ), key=f"B{vcell}")
+            globals()['cols' + arr_ref][vcell - mval].button(vemoji, on_click=PressedCheck, args=(vcell,),
+                                                             key=f"B{vcell}")
 
-    st.caption('') # vertical filler
+    st.caption('')  # vertical filler
     st.markdown(horizontal_bar, True)
 
     # Sección de escritura de puntajes y manejo de las interacciones del tablero
@@ -507,6 +552,7 @@ def NewGame():
         mystate.runpage = Main  # Cambia la página activa a la principal
         st.rerun()  # Reinicia la aplicación Streamlit para reflejar el cambio de página
 
+
 def Main():
     """
         Configura y muestra la página principal del juego, incluyendo la selección de la dificultad, entrada del nombre del jugador,
@@ -525,7 +571,8 @@ def Main():
     """
 
     # Ajustar el estilo de la barra lateral y los botones
-    st.markdown('<style>[data-testid="stSidebar"] > div:first-child {width: 310px;}</style>', unsafe_allow_html=True,)  # reduce sidebar width
+    st.markdown('<style>[data-testid="stSidebar"] > div:first-child {width: 310px;}</style>',
+                unsafe_allow_html=True, )  # reduce sidebar width
     st.markdown(purple_btn_colour, unsafe_allow_html=True)
 
     # Mostrar la página inicial con reglas e instrucciones
@@ -533,25 +580,27 @@ def Main():
     # Configuración de la barra lateral para entradas de usuario y opciones
     with st.sidebar:
         # Selección de nivel de dificultad
-        mystate.GameDetails[0] = st.radio('Difficulty Level:', options=('Easy', 'Medium', 'Hard'), index=1, horizontal=True, )
+        mystate.GameDetails[0] = st.radio('Difficulty Level:', options=('Easy', 'Medium', 'Hard'), index=1,
+                                          horizontal=True, )
 
         # Entrada para el nombre del jugador y el país
-        mystate.GameDetails[3] = st.text_input("Player Name, Country", placeholder='Shawn Pereira, India', help='Optional input only for Leaderboard')
+        mystate.GameDetails[3] = st.text_input("Player Name, Country", placeholder='Shawn Pereira, India',
+                                               help='Optional input only for Leaderboard')
 
         # Botón para iniciar un nuevo juego
         if st.button(f"🕹️ New Game", use_container_width=True):
             # Configurar intervalos de tiempo y tamaño de la cuadrícula basado en la dificultad seleccionada
             if mystate.GameDetails[0] == 'Easy':
-                mystate.GameDetails[1] = 8         # secs interval
-                mystate.GameDetails[2] = 6         # total_cells_per_row_or_col
-            
+                mystate.GameDetails[1] = 8  # secs interval
+                mystate.GameDetails[2] = 6  # total_cells_per_row_or_col
+
             elif mystate.GameDetails[0] == 'Medium':
-                mystate.GameDetails[1] = 6         # secs interval
-                mystate.GameDetails[2] = 7         # total_cells_per_row_or_col
-            
+                mystate.GameDetails[1] = 6  # secs interval
+                mystate.GameDetails[2] = 7  # total_cells_per_row_or_col
+
             elif mystate.GameDetails[0] == 'Hard':
-                mystate.GameDetails[1] = 5         # secs interval
-                mystate.GameDetails[2] = 8         # total_cells_per_row_or_col
+                mystate.GameDetails[1] = 5  # secs interval
+                mystate.GameDetails[2] = 8  # total_cells_per_row_or_col
 
             # Crear el leaderboard si no existe, preparar el juego y cambiar a la pantalla de juego
             Leaderboard('create')
@@ -560,7 +609,7 @@ def Main():
             mystate.runpage = NewGame
             st.rerun()
 
-        st.markdown(horizontal_bar, True) # Barra decorativa horizontal
+        st.markdown(horizontal_bar, True)  # Barra decorativa horizontal
 
 
 if 'runpage' not in mystate: mystate.runpage = Main

@@ -1,4 +1,3 @@
-
 class GameController:
     def __init__(self):
         self.selected_difficulty = None
@@ -22,4 +21,3 @@ class GameController:
 
     def play(self, cell_idx):
         pass
-

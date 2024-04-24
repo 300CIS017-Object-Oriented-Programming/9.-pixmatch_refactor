@@ -23,7 +23,7 @@ class LeaderBoard:
                 leaderboard = json.load(open(self.leaderboard_file_name_path))
                 leaderboard = dict(
                     sorted(leaderboard.items(), key=lambda item: item[1]['HighestScore'], reverse=True))  # sort desc
-                return leaderboard # Se retorna el diccionario con el leaderboard
+                return leaderboard  # Se retorna el diccionario con el leaderboard
 
                 """ Todo esto ya no va pq corresponde a la lógica de presentación
                 sc0, sc1, sc2, sc3 = st.columns((2, 3, 3, 3))
@@ -42,25 +42,25 @@ class LeaderBoard:
                 # Controla el caso en el que e lederboard no existe
                 raise Exception("Leaderboard file does not exist")
 
-
     def update_leader_board(self, player, MAX_PLAYERS):
         leaderboard_dicc = self.read_leader_board(player)
         leaderboard_dict_lngth = len(leaderboard_dicc)
 
-        if leaderboard_dict_lngth  >= MAX_PLAYERS: # Se llegó al máximo de jugadores en el leaderboard
+        if leaderboard_dict_lngth >= MAX_PLAYERS:  # Se llegó al máximo de jugadores en el leaderboard
             leaderboard_min_score = min(leaderboard_dicc.values())
             if player.get_current_score() > leaderboard_min_score:
                 # El puntaje del jugador actual supera al puntaje mínimo del leaderboard
                 # Solo se dejan en el diccionario el máximo de elementos (menos uno) para agregar como último elemento posible el jugador actual
-                for i in range(leaderboard_dict_lngth - MAX_PLAYERS-1):
+                for i in range(leaderboard_dict_lngth - MAX_PLAYERS - 1):
                     leaderboard_dicc.popitem()
                 leaderboard_dicc[MAX_PLAYERS] = {'NameCountry': player.get_country(),
-                                                        'HighestScore': player.get_score()}
+                                                 'HighestScore': player.get_score()}
                 # Se ordenan nuevamente el leaderboard
                 leaderboard = dict(
-                    sorted(leaderboard_dicc.items(), key=lambda item: item[1]['HighestScore'], reverse=True))  # sort desc
+                    sorted(leaderboard_dicc.items(), key=lambda item: item[1]['HighestScore'],
+                           reverse=True))  # sort desc
         else:
             leaderboard_dicc[str(leaderboard_dict_lngth + 1)] = {'NameCountry': player.get_country(),
-                                             'HighestScore': player.get_score()}
+                                                                 'HighestScore': player.get_score()}
         # guarda en disco
         json.dump(leaderboard_dicc, open(self.leaderboard_file_name_path, 'w'))

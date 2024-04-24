@@ -1,13 +1,9 @@
-import streamlit as st
-import os
-import time as tm
 import random
-import base64
-import json
-from PIL import Image
-from streamlit_autorefresh import st_autorefresh
 
-from settings import HORIZONTAL_BAR_HTML_TEMPLATE,  IMAGES_PATH
+import streamlit as st
+from PIL import Image
+
+from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH, PURPLE_BUTTON_HTML_TEMPLATE
 
 
 def draw_instructions():
@@ -50,19 +46,36 @@ def draw_instructions():
     st.markdown(author_details, unsafe_allow_html=True)
     st.info("Modified by: Luisa Rincon")
 
+def draw_main_page():
+    # Ajustar el estilo de la barra lateral y los botones
+    st.markdown('<style>[data-testid="stSidebar"] > div:first-child {width: 310px;}</style>',
+                unsafe_allow_html=True, )  # reduce sidebar width
+    st.markdown(PURPLE_BUTTON_HTML_TEMPLATE, unsafe_allow_html=True)
+
+    # Mostrar la página inicial con reglas e instrucciones
+    draw_instructions()
+
+
+
+
 def reduce_gap_from_page_top(self, section_to_adjust):
     pass
+
 
 def draw_leaderboard_ranking(self):
     pass
 
+
 def draw_target_emoji(self):
     pass
+
 
 def draw_main_board(self):
     pass
 
+
 def draw_playing_gui(self):
     pass
+
 
 draw_instructions()
