@@ -58,7 +58,32 @@ def draw_main_page(game_controller):
 
     # Configuración de la barra lateral para entradas de usuario y opciones
     with st.sidebar:
-        st.write("Pendiente migracion")
+        difficulty_levels_values = DIFFICULTY_LEVELS_OPTIONS.keys()
+        # Selección de nivel de dificultad
+        selected_difficulty_key = st.radio('Difficulty Level:', options=difficulty_levels_values, index=1,
+                                           horizontal=True)
+        # Busca en el diccionario de dificultaes la llave de la dificultad seleccionada y la asigna al controlador
+        game_controller.selected_difficulty = DIFFICULTY_LEVELS_OPTIONS[selected_difficulty_key]
+
+        # Entrada para el nombre del jugador y el país
+        player_info = st.text_input("Player Name, Country", placeholder='Shawn Pereira, India',
+                                    help='Optional input only for Leaderboard')
+        # Asigna la información del jugador a
+        game_controller.define_player(player_info)
+
+        # Botón para iniciar un nuevo juego
+        if st.button(f"🕹️ New Game", use_container_width=True):
+            st.write("voy a iniciar el juego")
+            # Crear el leaderboard si no existe, preparar el juego y cambiar a la pantalla de juego
+            # Leaderboard('create')
+
+            # PreNewGame()
+            # mystate.runpage = play
+            # st.rerun()
+
+        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)  # Barra decorativa horizontal
+
+
 def reduce_gap_from_page_top(self, section_to_adjust):
     pass
 
