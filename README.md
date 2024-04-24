@@ -26,3 +26,8 @@ El proyecto tiene la siguiente estructura de directorios:
 2. Documentar las clases y métodos que se han creado
 3. Genera documentación que explique la estructura de directorios de este proyecto
 4. Completar código fuente para lograr funcionalidad completa del juego
+
+## Por hacer
+1. Intente correr el proyecto, identifique el script que inicia la interacción y ejecute el compato streamlit run `nombre.py`
+2. Debe ver algo como lo siguiente ![img.png](docs/img/ejecucion_poo_template.png)
+3. Inicie la migración iniciando por el radio button de las dificultades
