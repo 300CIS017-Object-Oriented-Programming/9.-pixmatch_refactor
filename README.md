@@ -25,3 +25,4 @@ El proyecto tiene la siguiente estructura de directorios:
 1. Completar la estructura de directorios que tiene
 2. Documentar las clases y métodos que se han creado
 3. Genera documentación que explique la estructura de directorios de este proyecto
+4. Completar código fuente para lograr funcionalidad completa del juego
