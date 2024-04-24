@@ -22,10 +22,9 @@ para favorcer la mantenibilidad del código fuente.
 
 El proyecto tiene la siguiente estructura de directorios:
 
-1. Completar la estructura de directorios que tiene
-2. Documentar las clases y métodos que se han creado
-3. Genera documentación que explique la estructura de directorios de este proyecto
-4. Completar código fuente para lograr funcionalidad completa del juego
+1. Documentar las clases y métodos que se han creado
+2. Genera documentación que explique la estructura de directorios de este proyecto
+3. Completar código fuente para lograr funcionalidad completa del juego
 
 ## Por hacer
 1. Intente correr el proyecto, identifique el script que inicia la interacción y ejecute el compato streamlit run `nombre.py`
@@ -77,9 +76,9 @@ classDiagram
         +update_leader_board(player, MAX_PLAYERS)()
     }
     class Player {
-        +name
-        +country
-        +score
+        -name
+        -country
+        -score
     }
     class MainView {
         +draw_main_page()
