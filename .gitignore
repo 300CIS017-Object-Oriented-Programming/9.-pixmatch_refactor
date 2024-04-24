@@ -160,7 +160,5 @@ cython_debug/
 #.idea/
 
 
-models/integracion_controles.py
-models/streamlit_app.py
-
 .idea/
+leaderboard.json
