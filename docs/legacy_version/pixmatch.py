@@ -124,7 +124,7 @@ def InitialPage():
         st.markdown(horizontal_bar, True)
 
         # sidebarlogo = Image.open('sidebarlogo.jpg').resize((300, 420))
-        sidebarlogo = Image.open('../static/sidebarlogo.jpg').resize((300, 390))
+        sidebarlogo = Image.open('../../static/sidebarlogo.jpg').resize((300, 390))
         st.image(sidebarlogo, use_column_width='auto')
 
     # ViewHelp
