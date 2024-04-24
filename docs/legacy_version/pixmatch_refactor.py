@@ -579,5 +579,6 @@ def Main():
         st.markdown(horizontal_bar, True)  # Barra decorativa horizontal
 
 
-if 'runpage' not in mystate: mystate.runpage = Main
+if 'runpage' not in mystate:
+    mystate.runpage = Main
 mystate.runpage()

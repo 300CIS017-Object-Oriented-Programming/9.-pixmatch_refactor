@@ -1,13 +1,12 @@
 class Player:
-    def __init__(self):
-        self.__name = None
-        self.__country = None
+    def __init__(self, player_name_country):
+        self.__player_name_country = player_name_country
         self.__score = 0
 
     def get_player_info(self):
         if self.name is None:
             return None
-        return f"Player: {self.__name}, Country: {self.__country}, Score: {self.__score}"
+        return f"Player: {self.__player_name_country}, Score: {self.__score}"
 
     def increase_score(self, difficulty):
         self.__score += difficulty.points_by_difficulty
@@ -21,8 +20,6 @@ class Player:
     def get_current_score(self):
         return self.__score
 
-    def get_country(self):
-        return self.__country
 
     def get_name(self):
-        return self.__name
+        return self.__player_name_country

@@ -3,7 +3,7 @@ import random
 import streamlit as st
 from PIL import Image
 
-from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH, PURPLE_BUTTON_HTML_TEMPLATE
+from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH, PURPLE_BUTTON_HTML_TEMPLATE, DIFFICULTY_LEVELS_OPTIONS
 
 
 def draw_instructions():
@@ -46,7 +46,8 @@ def draw_instructions():
     st.markdown(author_details, unsafe_allow_html=True)
     st.info("Modified by: Luisa Rincon")
 
-def draw_main_page():
+def draw_main_page(game_controller):
+
     # Ajustar el estilo de la barra lateral y los botones
     st.markdown('<style>[data-testid="stSidebar"] > div:first-child {width: 310px;}</style>',
                 unsafe_allow_html=True, )  # reduce sidebar width
@@ -55,8 +56,32 @@ def draw_main_page():
     # Mostrar la página inicial con reglas e instrucciones
     draw_instructions()
 
+    # Configuración de la barra lateral para entradas de usuario y opciones
+    with st.sidebar:
+        difficulty_levels_values = DIFFICULTY_LEVELS_OPTIONS.keys()
+        # Selección de nivel de dificultad
+        selected_difficulty_key= st.radio('Difficulty Level:', options= difficulty_levels_values, index=1,
+                                          horizontal=True )
+        # Busca en el diccionario de dificultaes la llave de la dificultad seleccionada y la asigna al controlador
+        game_controller.selected_difficulty = DIFFICULTY_LEVELS_OPTIONS[selected_difficulty_key]
 
+        # Entrada para el nombre del jugador y el país
+        player_info = st.text_input("Player Name, Country", placeholder='Shawn Pereira, India',
+                                               help='Optional input only for Leaderboard')
+        # Asigna la información del jugador a
+        game_controller.define_player(player_info)
 
+        # Botón para iniciar un nuevo juego
+        if st.button(f"🕹️ New Game", use_container_width=True):
+            st.write("voy a iniciar el juego")
+            # Crear el leaderboard si no existe, preparar el juego y cambiar a la pantalla de juego
+            #Leaderboard('create')
+
+            #PreNewGame()
+            #mystate.runpage = play
+            #st.rerun()
+
+        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)  # Barra decorativa horizontal
 
 def reduce_gap_from_page_top(self, section_to_adjust):
     pass
@@ -77,5 +102,3 @@ def draw_main_board(self):
 def draw_playing_gui(self):
     pass
 
-
-draw_instructions()

@@ -8,12 +8,12 @@ class GUIController:
     def __init__(self):
 
         if 'my_state' not in st.session_state:
-            self.run_page = self.main()  # Asigna el método main a la variable run_page para ejecutarse
-            self.game_controller = GameController()
 
+            self.game_controller = GameController()
             # Agregar las variables que necesitan
 
-            # Variable necesasaria para mantener el estado
+            self.run_page = 'main'  # Asigna el método main a la variable run_page para ejecutarse
+            # Variable necesaria para mantener el estado
             st.session_state['my_state'] = self
 
         else:
@@ -22,8 +22,13 @@ class GUIController:
 
             # Tomar las variables que se necesitan del estado
 
+        self.main() # LLamaal metodo que controla la vista principal
+
     def main(self):
-        draw_main_page()
+        if self.run_page == 'main':
+            draw_main_page(self.game_controller)
+        else:
+            st.write("Pendiente migracion")
 
     def read_picture_file(self):
         pass
