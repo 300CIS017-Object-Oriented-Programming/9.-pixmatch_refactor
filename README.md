@@ -87,7 +87,7 @@ classDiagram
     class App {
         +main()
     }
-    GUIController ..> GameController : uses
+    GUIController --> GameController : has
     Board <-- GameController : has
     Board o-- BoardCell : has
     GameController --> Player : has
