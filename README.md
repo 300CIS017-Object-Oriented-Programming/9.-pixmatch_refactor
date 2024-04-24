@@ -35,7 +35,7 @@ El proyecto tiene la siguiente estructura de directorios:
 
 ## Diagrama del proyecto
 ```mermaid
-PixelPOO
+classDiagram
     class GameController {
         -selected_difficulty
         -current_player
