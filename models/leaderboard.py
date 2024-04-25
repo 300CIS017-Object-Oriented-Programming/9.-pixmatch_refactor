@@ -8,39 +8,35 @@ class LeaderBoard:
     def __init__(self):
         self.leaderboard_file_name_path = MAX_LEADERBOARD_PLAYERS + LEADERBOARD_FILE_NAME
 
-    def create_leader_board(self, player):
-        # El jugador tiene que tener un nombre para ser agregado al leaderboard
-        if not player.get_player_info() is None:
-            if os.path.isfile(self.leaderboard_file_name_path) == False:
-                tmpdict = {}
-                # Crea el archivo de leaderboard vacío
-                json.dump(tmpdict, open(self.leaderboard_file_name_path, 'w'))  # write file
+    def create_leader_board(self):
+       if os.path.isfile(self.leaderboard_file_name_path) == False:
+            tmpdict = {}
+            # Crea el archivo de leaderboard vacío
+            json.dump(tmpdict, open(self.leaderboard_file_name_path, 'w'))  # write file
 
-    def read_leader_board(self, player):
-        # Escribe en el leaderboard si el jugador ha proporcionado su nombre y el archivo existe
-        if not player.get_player_info() is None:
-            if os.path.isfile(self.leaderboard_file_name_path):
-                leaderboard = json.load(open(self.leaderboard_file_name_path))
-                leaderboard = dict(
-                    sorted(leaderboard.items(), key=lambda item: item[1]['HighestScore'], reverse=True))  # sort desc
-                return leaderboard  # Se retorna el diccionario con el leaderboard
+    def read_leader_board(self):
+        if os.path.isfile(self.leaderboard_file_name_path):
+            leaderboard = json.load(open(self.leaderboard_file_name_path))
+            leaderboard = dict(
+                sorted(leaderboard.items(), key=lambda item: item[1]['HighestScore'], reverse=True))  # sort desc
+            return leaderboard  # Se retorna el diccionario con el leaderboard
 
-                """ Todo esto ya no va pq corresponde a la lógica de presentación
-                sc0, sc1, sc2, sc3 = st.columns((2, 3, 3, 3))
-                rknt = 0
-                for key in leaderboard:
-                    rknt += 1
-                    if rknt == 1:
-                        sc0.write('🏆 Ganadores anteriores:')
-                        sc1.write(f"🥇 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
-                    elif rknt == 2:
-                        sc2.write(f"🥈 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
-                    elif rknt == 3:
-                        sc3.write(f"🥉 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
-                """
-            else:
-                # Controla el caso en el que e lederboard no existe
-                raise Exception("Leaderboard file does not exist")
+            """ Todo esto ya no va pq corresponde a la lógica de presentación
+            sc0, sc1, sc2, sc3 = st.columns((2, 3, 3, 3))
+            rknt = 0
+            for key in leaderboard:
+                rknt += 1
+                if rknt == 1:
+                    sc0.write('🏆 Ganadores anteriores:')
+                    sc1.write(f"🥇 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
+                elif rknt == 2:
+                    sc2.write(f"🥈 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
+                elif rknt == 3:
+                    sc3.write(f"🥉 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
+            """
+        else:
+            # Controla el caso en el que e lederboard no existe
+            raise Exception("Leaderboard file does not exist")
 
     def update_leader_board(self, player, MAX_PLAYERS):
         leaderboard_dicc = self.read_leader_board(player)

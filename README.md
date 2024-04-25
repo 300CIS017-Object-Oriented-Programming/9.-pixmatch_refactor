@@ -38,14 +38,17 @@ classDiagram
     class GameController {
         -selected_difficulty
         -current_player
-        -emojis_bank
+        -emoji_bank
         -target_emoji
         -game_status
         -board
         +define_player()
         +pick_emoji_bank()
+        +choose_sidebar_emoji()
         +find_target_emoji()
-        +reset_board()
+        +pre_new_game()
+        +new_game()
+        +reset_game()
         +verify_game_status()
         +play()
     }
@@ -59,6 +62,7 @@ classDiagram
     class Board {
         -cells_map
         -expired_cells_list
+        -board_size
         +update_cell()
         +reset_board()
     }
@@ -76,12 +80,14 @@ classDiagram
         +update_leader_board(player, MAX_PLAYERS)()
     }
     class Player {
-        -name
-        -country
+        -player_name_country
         -score
+        
+        + Player(player_name_country)
     }
     class MainView {
         +draw_main_page()
+        +draw_main_board()
     }
     class App {
         +main()
@@ -98,4 +104,3 @@ classDiagram
 
 ```
 Editor:https://diagrams.helpful.dev/s/s:MAdFfNUs
-![img.png](docs/classes.png)
