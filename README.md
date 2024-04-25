@@ -22,10 +22,9 @@ para favorcer la mantenibilidad del código fuente.
 
 El proyecto tiene la siguiente estructura de directorios:
 
-1. Completar la estructura de directorios que tiene
-2. Documentar las clases y métodos que se han creado
-3. Genera documentación que explique la estructura de directorios de este proyecto
-4. Completar código fuente para lograr funcionalidad completa del juego
+1. Documentar las clases y métodos que se han creado
+2. Genera documentación que explique la estructura de directorios de este proyecto
+3. Completar código fuente para lograr funcionalidad completa del juego
 
 ## Por hacer
 1. Intente correr el proyecto, identifique el script que inicia la interacción y ejecute el compato streamlit run `nombre.py`
@@ -39,14 +38,17 @@ classDiagram
     class GameController {
         -selected_difficulty
         -current_player
-        -emojis_bank
+        -emoji_bank
         -target_emoji
         -game_status
         -board
         +define_player()
         +pick_emoji_bank()
+        +choose_sidebar_emoji()
         +find_target_emoji()
-        +reset_board()
+        +pre_new_game()
+        +new_game()
+        +reset_game()
         +verify_game_status()
         +play()
     }
@@ -60,6 +62,7 @@ classDiagram
     class Board {
         -cells_map
         -expired_cells_list
+        -board_size
         +update_cell()
         +reset_board()
     }
@@ -77,17 +80,19 @@ classDiagram
         +update_leader_board(player, MAX_PLAYERS)()
     }
     class Player {
-        +name
-        +country
-        +score
+        -player_name_country
+        -score
+        
+        + Player(player_name_country)
     }
     class MainView {
         +draw_main_page()
+        +draw_main_board()
     }
     class App {
         +main()
     }
-    GUIController ..> GameController : uses
+    GUIController --> GameController : has
     Board <-- GameController : has
     Board o-- BoardCell : has
     GameController --> Player : has
@@ -99,4 +104,3 @@ classDiagram
 
 ```
 Editor:https://diagrams.helpful.dev/s/s:MAdFfNUs
-![img.png](docs/classes.png)

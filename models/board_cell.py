@@ -1,20 +1,11 @@
 class BoardCell:
-    def __init__(self):
-        self.__cell_idx = None
-        self.__verification_result = None
-        self.__row = 0
-        self.col = 0
-        self.emoji_img = ''
-        self.emoji_index = None
-
-    # Constructor que recibe todos los parametros de la clse
-    def __int__(self, id, row, col, emoji_index):
-        self.id = id
-        self.__verification_result = False  # Inicialmente no se ha verificado si hay coincidencia
-        self.__row = row
+    def __init__(self,cell_idx, row, col):
+        self.cell_idx = cell_idx
+        self.verification_result = None #No se ha seleccionado, ni se ha verificado ninguna vez
+        self.row = row
         self.col = col
         self.emoji_img = ''
-        self.emoji_index = emoji_index
+        self.emoji_index = 0
 
     def check_emoji_match(self, target_emoji):
         """ Cambia la lógica de la variable que indica que se ha verificado la coincidencia, el resultado puede ser True o False pero reemplaza el None del punto inicial de partida. """
@@ -23,6 +14,7 @@ class BoardCell:
         else:
             self.__verification_result = False
 
+
     def set_emoji_img(self, img):
         self.emoji_img = img
 
@@ -30,13 +22,13 @@ class BoardCell:
         return self.emoji_index
 
     def get_verification_result(self):
-        return self.__verification_result
+        return self.verification_result
 
     def get_id(self):
         return self.id
 
     def get_row(self):
-        return self.__row
+        return self.row
 
     def get_col(self):
         return self.col
