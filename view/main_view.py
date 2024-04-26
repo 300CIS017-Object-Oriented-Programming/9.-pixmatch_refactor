@@ -68,57 +68,36 @@ def draw_main_page(gui_controller):
                                                 help='Optional input only for Leaderboard')
             # Botón para iniciar un nuevo juego
             if st.button(f"🕹️ New Game", use_container_width=True):
-                gui_controller.pre_new_game(selected_difficulty, player_name_country)
+                gui_controller.pre_new_game_gui(selected_difficulty, player_name_country)
 
             st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)  # Barra decorativa horizontal
 
 
-def draw_main_board(self):
+def draw_main_board(gui_controller):
 
         reduce_gap_from_page_top('sidebar')
 
-        # TODO pasar los elementos que importan dela barra lateral
-
-        # Lee y muestra el leaderboard
-        # TODO
-
         st.subheader("Picture Positions:")
-        # st.markdown(horizontal_bar, True)
+        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
 
         # Set Board Dafaults
         st.markdown("<style> div[class^='css-1vbkxwb'] > p { font-size: 1.5rem; } </style> ",
                     unsafe_allow_html=True)  # make button face big
 
         # Configura y muestra los botones del tablero del juego de forma programatrica
-        for i in range(1, self.game_controller.board.board_size + 1):
+        for i in range(1, gui_controller.game_controller.board.board_size + 1):
             # Configura las columnas para los botones del tablero.
             # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
             # La variable 'tlst' define el espacio de cada columna, y luego se crea un objeto de columna para cada posición.
 
-            tlst = ([1] * self.game_controller.board.board_size) + [2]  # 2 = espacio al lado derecho
+            tlst = ([1] * gui_controller.game_controller.board.board_size) + [2]  # 2 = espacio al lado derecho
             globals()['cols' + str(i)] = st.columns(tlst)
 
-        # FIXME arrelgar esto
-        """
-        for vcell in range(1, game_controller.board.board_size+1):
-
-            board_cell  = game_controller.board.get_cell_by_idx(vcell)
-
-            if board_cell.i
-
-            arr_ref = str((vcell - 1) // total_cells_per_row_or_col + 1)
-            mval = total_cells_per_row_or_col * ((vcell - 1) // total_cells_per_row_or_col)
-
-            globals()['cols' + arr_ref][vcell - mval] = globals()['cols' + arr_ref][vcell - mval].empty()
-            if mystate.plyrbtns[vcell]['isPressed']:
-                emoji = '✅️' if mystate.plyrbtns[vcell]['isTrueFalse'] else '❌'
-                globals()['cols' + arr_ref][vcell - mval].markdown(pressed_emoji.replace('|fill_variable|', emoji), True)
-            else:
-                vemoji = mystate.plyrbtns[vcell]['eMoji']
-                globals()['cols' + arr_ref][vcell - mval].button(vemoji, on_click=PressedCheck, args=(vcell,),
-                                                                 key=f"B{vcell}")
-        """
+        # FIXME terminar de pintar el tablero principal y todas sus interacciones
         st.write("Soy tablero principal")
+        if st.button("Cambiar a uno"):
+            st.session_state.my_state.run_page = 'main'
+            st.rerun()
 
 def draw_leaderboard_ranking(st, leaderboar):
     pass
@@ -129,7 +108,7 @@ def draw_target_emoji(st, emoji):
 def read_picture_file(self):
     pass
 
-def reduce_gap_from_page_top(self, st, section_to_adjust):
+def reduce_gap_from_page_top(section_to_adjust):
     if section_to_adjust == 'main page':
         st.markdown(" <style> div[class^='block-container'] { padding-top: 2rem; } </style> ",
                     True)  # Ajusta el espacio en la página principal

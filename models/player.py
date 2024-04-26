@@ -1,4 +1,7 @@
 class Player:
+    """
+    Clase para mantener la información del jugador y su puntaje.
+    """
     def __init__(self, player_name_country):
         self.__player_name_country = player_name_country
         self.__score = 0

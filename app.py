@@ -9,3 +9,4 @@ if __name__ == "__main__":
 
     # Punto de entrada de la aplicación, llama al controlador de la interfaz gráfica
     gui = GUIController()
+    gui.main()

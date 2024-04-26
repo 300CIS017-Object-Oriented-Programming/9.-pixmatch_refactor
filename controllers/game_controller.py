@@ -3,11 +3,13 @@ import random
 from models.board import Board
 from models.board_cell import BoardCell
 from models.player import Player
-from settings import EMOJIS_CATEGORIES_EASY, EMOJIS_CATEGORIES_MEDIUM, EMOJIS_CATEGORIES_HARD
-
+from settings import EMOJIS_CATEGORIES_EASY, EMOJIS_CATEGORIES_MEDIUM, EMOJIS_CATEGORIES_HARD, DIFFICULTY_LEVELS_OPTIONS
 
 class GameController:
     def __init__(self):
+        """
+          Inicializa el controlador del juego con los valores predeterminados.
+        """
         self.selected_difficulty = None
         self.current_player = None
         self.emoji_bank = []
@@ -16,9 +18,10 @@ class GameController:
         self.board = None
 
     def pick_emoji_bank(self):
+        """
+         Selecciona un banco de emojis basado en la dificultad seleccionada.
+        """
         random.seed()
-        # Selección de categoría de emojis según la dificultad del juego
-
         # Version mejorada de la selección de categoría de emojis según la dificultad del juego
         difficulty_emoji_map = {
             'Easy': EMOJIS_CATEGORIES_EASY,
@@ -31,9 +34,11 @@ class GameController:
             # Define el banco de emojis
             self.emoji_bank = random.choice(difficulty_emoji_map[difficulty_name])
 
-
     def choose_sidebar_emoji(self):
-        # Seleccionar un emoji para la barra lateral de forma aleatoria
+        """
+        Selecciona un emoji al azar para la barra lateral.
+        """
+
         sidebar_emoji_index = random.randint(0, len(self.emoji_bank) - 1)
         self.target_emoji = self.emoji_bank[sidebar_emoji_index]
 
@@ -49,7 +54,7 @@ class GameController:
 
         """ FIXME. Separar esta lógica para que la clase board haga algunas partes. PUede hacer ajustes sobre las clases propuestas
         # Configurar emojis para cada celda del tablero
-        for vcell in range(1, self.board.board_size + 1):
+        for vcell in range(1, self.board.total_cells + 1):
             if not mystate.plyrbtns[vcell]['isPressed']:  # Solo cambia los emojis de celdas no presionadas
                 emoji_index = random.randint(0, len(mystate.emoji_bank) - 1)
                 vemoji = mystate.emoji_bank[emoji_index]
@@ -67,7 +72,7 @@ class GameController:
                 mystate.plyrbtns[selected_cell]['eMoji'] = mystate.sidebar_emoji
         """
 
-    def pre_new_game(self):
+    def pre_new_game(self, selected_difficulty, player_name_country):
         """
                Prepara el juego para una nueva sesión, inicializando las celdas y los puntajes.
 
@@ -75,7 +80,9 @@ class GameController:
                Reinicia las celdas del juego y selecciona de manera aleatoria los emojis
                que aparecerán en el tablero según la dificultad del juego. Asegura que todos los botones de
                la cuadrícula estén configurados para el inicio de una nueva partida.
-               """
+        """
+        self.selected_difficulty = DIFFICULTY_LEVELS_OPTIONS[selected_difficulty]
+        self.current_player = Player(player_name_country)
 
         # Inicializa el tablero
         self.board = Board(self.selected_difficulty['board_size'])
@@ -87,22 +94,23 @@ class GameController:
         # FIXME pasar esto para la clase Board, por principio de responsabilidad, esta logica es mas del Board que del controller
         cont_row = 1
         cont_col = 1
-        for vcell in range(1,self.board.board_size + 1):
+        for vcell in range(1, self.board.total_cells + 1):
             # Crea un objeto de celda y lo agrega al mapa de celdas del tablero
             self.board.cells_map[vcell] = BoardCell(cell_idx=vcell, row=cont_row, col=cont_col)
             cont_col += 1
             if cont_col > self.selected_difficulty['board_size']:
-                cont_col = 1 # Reinicia el contador de columnnas cada vez que termina una fila
-                cont_row += 1 # Incrementa el contador de filas para indicar que va en la fila siguiente
+                cont_col = 1  # Reinicia el contador de columnnas cada vez que termina una fila
+                cont_row += 1  # Incrementa el contador de filas para indicar que va en la fila siguiente
 
         self.game_status = 'ACTIVE'
 
     def new_game(self):
 
-        # Tome la logica de newgame de la versión legacy y adaptela para que se ajuste a la estructura de clases definida en este proyecto
+        # Reinicia el tablero del juego
         self.reset_board()
 
         # Faltan el resto de elementos
+        # Tome la logica de newgame de la versión legacy y adaptela para que se ajuste a la estructura de clases definida en este proyecto
         pass
 
     def verify_game_status(self):

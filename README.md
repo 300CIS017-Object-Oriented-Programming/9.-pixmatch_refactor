@@ -63,6 +63,7 @@ classDiagram
         -cells_map
         -expired_cells_list
         -board_size
+        -total_cells 
         +update_cell()
         +reset_board()
     }

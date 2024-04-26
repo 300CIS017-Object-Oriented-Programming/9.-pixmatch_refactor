@@ -1,8 +1,12 @@
 class Board:
+    """
+    Clase que representa el tablero de juego con celdas y emojis. Util para mantener la información del tablero
+    """
     def __init__(self, board_size):
         self.cells_map = {}
         self.expired_cells_list = []
-        self.board_size = board_size**2 # El tamaño del tablero es el cuadrado del tamaño de la cuadrícula
+        self.board_size = board_size
+        self.total_cells = board_size**2 # El tamaño del tablero es el cuadrado del tamaño de la cuadrícula
 
     def prepare_board(self, difficulty):
         pass

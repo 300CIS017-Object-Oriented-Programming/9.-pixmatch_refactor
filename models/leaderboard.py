@@ -5,6 +5,9 @@ from settings import MAX_LEADERBOARD_PLAYERS, LEADERBOARD_FILE_NAME
 
 
 class LeaderBoard:
+    """
+    Clase para manejar el leaderboard del juego. Guarda y lee el leaderboard en un archivo JSON.
+    """
     def __init__(self):
         self.leaderboard_file_name_path = MAX_LEADERBOARD_PLAYERS + LEADERBOARD_FILE_NAME
 
