@@ -1,10 +1,12 @@
+import base64
 import random
 
 import streamlit as st
 from PIL import Image
+from streamlit_autorefresh import st_autorefresh
 
-from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH,DIFFICULTY_LEVELS_OPTIONS, PURPLE_BUTTON_HTML_TEMPLATE, \
-    IMAGES_PATH
+from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH, DIFFICULTY_LEVELS_OPTIONS, PURPLE_BUTTON_HTML_TEMPLATE, \
+    IMAGES_PATH, FILES_PATH, TARGET_EMOJI_HTML_TEMPLATE
 
 
 def draw_instructions(st):
@@ -77,6 +79,26 @@ def draw_main_board(gui_controller):
 
         reduce_gap_from_page_top('sidebar')
 
+        with st.sidebar:
+            st.subheader(f"🖼️ Pix Match: {gui_controller.game_controller.current_player.player_name_country}")
+            st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+
+            st.markdown(TARGET_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', gui_controller.game_controller.target_emoji), True)
+
+            # Temporizador de autorefrescamiento que resta puntos si el tiempo se agota
+            aftimer = st_autorefresh(interval=(gui_controller.get_refresh_interval()), key="aftmr")
+
+            if aftimer > 0:
+                # Se agotó el tiempo para seleccionar un emoji, entonces reduce el puntaje del jugador
+                gui_controller.game_controller.current_player.decrease_score()
+
+            st.info(gui_controller.get_score_and_pending_cells_values())
+
+            st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+            if st.button(f"🔙 Return to Main Page", use_container_width=True):
+                gui_controller.return_to_main()
+
+
         st.subheader("Picture Positions:")
         st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
 
@@ -105,8 +127,6 @@ def draw_leaderboard_ranking(st, leaderboar):
 def draw_target_emoji(st, emoji):
     pass
 
-def read_picture_file(self):
-    pass
 
 def reduce_gap_from_page_top(section_to_adjust):
     if section_to_adjust == 'main page':

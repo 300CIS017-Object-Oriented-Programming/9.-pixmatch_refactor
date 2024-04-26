@@ -47,30 +47,27 @@ class GameController:
             Reinicia el tablero del juego, configurando emojis aleatorios en cada celda de la cuadrícula,
             y asegurándose de que el emoji de la barra lateral esté presente al menos una vez en el tablero.
             """
-
-        # Define el emoji que se buscará
+        # Seleccionar un emoji para la barra lateral de forma aleatoria
         self.choose_sidebar_emoji()
+
         sidebar_emoji_in_list = False  # Controla si el emoji de la barra lateral está en el tablero
 
-        """ FIXME. Separar esta lógica para que la clase board haga algunas partes. PUede hacer ajustes sobre las clases propuestas
-        # Configurar emojis para cada celda del tablero
-        for vcell in range(1, self.board.total_cells + 1):
-            if not mystate.plyrbtns[vcell]['isPressed']:  # Solo cambia los emojis de celdas no presionadas
-                emoji_index = random.randint(0, len(mystate.emoji_bank) - 1)
-                vemoji = mystate.emoji_bank[emoji_index]
-                mystate.plyrbtns[vcell]['eMoji'] = vemoji
-
-                if vemoji == mystate.sidebar_emoji:
-                    sidebar_emoji_in_list = True
+        # Configurar emojis para cada celda del tablero que no ha sido presionada
+        unpressed_cells_list = self.board.get_unpressed_cells()
+        for unpressed_cell in unpressed_cells_list:
+            emoji_index = random.randint(0, len(self.emoji_bank) - 1)
+            emoji = self.emoji_bank[emoji_index]
+            # Actualiza el emoji de la celda
+            self.board.cells_map[unpressed_cell].set_emoji_img(emoji)
+            if emoji == self.target_emoji:
+                sidebar_emoji_in_list = True
 
         # Asegurar que el emoji de la barra lateral está al menos una vez en el tablero
         if not sidebar_emoji_in_list:
-            unpressed_cells = [cell for cell in range(1, (total_cells_per_row_or_col ** 2) + 1)
-                               if not mystate.plyrbtns[cell]['isPressed']]
-            if unpressed_cells:
-                selected_cell = random.choice(unpressed_cells)
-                mystate.plyrbtns[selected_cell]['eMoji'] = mystate.sidebar_emoji
-        """
+            if self.board.get_unpressed_cells().size > 0:
+                selected_cell = random.choice(unpressed_cells_list)
+                # Asigna el emoji de la barra lateral a la celda seleccionada
+                self.board.cells_map[selected_cell].set_emoji_img(self.target_emoji)
 
     def pre_new_game(self, selected_difficulty, player_name_country):
         """
@@ -98,6 +95,7 @@ class GameController:
             # Crea un objeto de celda y lo agrega al mapa de celdas del tablero
             self.board.cells_map[vcell] = BoardCell(cell_idx=vcell, row=cont_row, col=cont_col)
             cont_col += 1
+            # Verifica si se ha completado una fila
             if cont_col > self.selected_difficulty['board_size']:
                 cont_col = 1  # Reinicia el contador de columnnas cada vez que termina una fila
                 cont_row += 1  # Incrementa el contador de filas para indicar que va en la fila siguiente
@@ -109,9 +107,8 @@ class GameController:
         # Reinicia el tablero del juego
         self.reset_board()
 
-        # Faltan el resto de elementos
-        # Tome la logica de newgame de la versión legacy y adaptela para que se ajuste a la estructura de clases definida en este proyecto
-        pass
+
+
 
     def verify_game_status(self):
         pass

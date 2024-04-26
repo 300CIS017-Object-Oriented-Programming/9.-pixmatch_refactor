@@ -42,22 +42,23 @@ classDiagram
         -target_emoji
         -game_status
         -board
-        +define_player()
         +pick_emoji_bank()
         +choose_sidebar_emoji()
-        +find_target_emoji()
-        +pre_new_game()
+        +reset_board()
+        +pre_new_game(selected_difficulty, player_name_country)
         +new_game()
-        +reset_game()
         +verify_game_status()
-        +play()
+        +play(cell_idx)
     }
     class GUIController {
         -game_controller
         -run_page
         +main()
-        +read_picture_file()
-        +verify_pressed_cell()
+        +pre_new_game_gui(selected_difficulty, player_name_country)
+        +return_to_main()
+        +score_emoji()
+        +get_score_and_pending_cells_values()
+        +get_refresh_interval()
     }
     class Board {
         -cells_map
@@ -65,6 +66,8 @@ classDiagram
         -board_size
         -total_cells 
         +update_cell()
+        +count_pending_cells()
+        +get_pending_cells()
         +reset_board()
     }
     class BoardCell {
@@ -72,8 +75,7 @@ classDiagram
         -verification_result
         -row = 0
         -col = 0
-        -emoji_img
-        -emoji_index 
+        -emoji_img: string
     }
     class LeaderBoardManager {
         +create_leader_board(player)
@@ -87,8 +89,8 @@ classDiagram
         + Player(player_name_country)
     }
     class MainView {
-        +draw_main_page()
-        +draw_main_board()
+        +draw_main_page(gui_controller)
+        +draw_main_board(gui_controller)
     }
     class App {
         +main()
@@ -100,8 +102,7 @@ classDiagram
     GameController --> LeaderBoardManager : uses
     LeaderBoardManager ..> Player : usesa
     MainView ..> GameController : uses
-    GUIController ..> MainView : uses
+    GUIController <..> MainView : uses
     App ..> GUIController : launches
-
 ```
 Editor:https://diagrams.helpful.dev/s/s:MAdFfNUs

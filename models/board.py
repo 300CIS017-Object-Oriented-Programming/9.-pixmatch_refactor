@@ -12,12 +12,19 @@ class Board:
         pass
 
     def get_unpressed_cells(self):
-        #TODO Implementar aqui la lógica para devolver solo las celdas que  no se han presionado
+        """
+        Retorna una lista de celdas no presionadas que es la diferencia entre las celdas expiradas y las celdas totales del tablero
+        """
+        all_cells = self.cells_map.keys()
+        unpressed_cells = list(set(all_cells) - set(self.expired_cells_list))
+        return unpressed_cells
 
-        pass
+    def count_pending_cells(self):
+        """
+        Retorna la cantidad de celdas pendientes que no han sido presionadas
+        """
+        pending_cells = self.total_cells - len(self.expired_cells_list)
+        return pending_cells
 
     def add_expired_cell(self, cell_id):
         pass
-
-    def get_cell_by_idx(self, cell_id):
-        return self.cells_map[cell_id]

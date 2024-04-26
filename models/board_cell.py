@@ -10,7 +10,6 @@ class BoardCell:
         self.row = row
         self.col = col
         self.emoji_img = ''
-        self.emoji_index = 0
 
     def check_emoji_match(self, target_emoji):
         """ Cambia la lógica de la variable que indica que se ha verificado la coincidencia, el resultado puede ser True o False pero reemplaza el None del punto inicial de partida. """
@@ -22,10 +21,6 @@ class BoardCell:
 
     def set_emoji_img(self, img):
         self.emoji_img = img
-
-    def get_emj_index(self):
-        return self.emoji_index
-
     def get_verification_result(self):
         return self.verification_result
 
