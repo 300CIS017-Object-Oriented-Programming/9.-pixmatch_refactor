@@ -110,11 +110,18 @@ class GameController:
         # Reinicia el tablero del juego
         self.reset_board()
 
-
-
-
     def verify_game_status(self):
         pass
 
     def play(self, cell_idx):
-        pass
+        """
+        Verifica si el emoji seleccionado por el jugador coincide con el emoji objetivo.
+        Actualiza el puntaje del jugador en consecuencia.
+        Args:
+            cell_idx:
+        """
+        cell = self.board.cells_map[cell_idx]
+        if cell.verify_emoji_match(self.target_emoji):
+            self.current_player.increase_score()
+        else:
+            self.current_player.decrease_score()

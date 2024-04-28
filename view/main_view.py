@@ -106,7 +106,8 @@ def draw_main_board(gui_controller):
         st.markdown("<style> div[class^='css-1vbkxwb'] > p { font-size: 1.5rem; } </style> ",
                     unsafe_allow_html=True)  # make button face big
 
-
+        # Dibujar la matriz del tablero
+        gui_controller.new_game_gui()
 
 
         # FIXME terminar de pintar el tablero principal y todas sus interacciones

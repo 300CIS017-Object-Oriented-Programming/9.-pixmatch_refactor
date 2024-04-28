@@ -76,6 +76,8 @@ classDiagram
         -row = 0
         -col = 0
         -emoji_img: string
+        +BoardCell(cell_idx,row,col)
+        +verify_emoji_match()
     }
     class LeaderBoardManager {
         +create_leader_board(player)
