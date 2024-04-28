@@ -82,7 +82,6 @@ def draw_main_board(gui_controller):
         with st.sidebar:
             st.subheader(f"🖼️ Pix Match: {gui_controller.game_controller.current_player.player_name_country}")
             st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
-
             st.markdown(TARGET_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', gui_controller.game_controller.target_emoji), True)
 
             # Temporizador de autorefrescamiento que resta puntos si el tiempo se agota pendiente por agregar
@@ -96,7 +95,7 @@ def draw_main_board(gui_controller):
 
             st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
             if st.button(f"🔙 Return to Main Page", use_container_width=True):
-                gui_controller.return_to_main()
+                gui_controller.back_to_main()
 
 
         st.subheader("Picture Positions:")
@@ -109,12 +108,6 @@ def draw_main_board(gui_controller):
         # Dibujar la matriz del tablero
         gui_controller.new_game_gui()
 
-
-        # FIXME terminar de pintar el tablero principal y todas sus interacciones
-        st.write("Soy tablero principal")
-        if st.button("Cambiar a uno"):
-            st.session_state.my_state.run_page = 'main'
-            st.rerun()
 
 def draw_leaderboard_ranking(st, leaderboar):
     pass

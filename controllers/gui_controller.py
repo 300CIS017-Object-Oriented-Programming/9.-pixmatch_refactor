@@ -21,7 +21,6 @@ class GUIController:
             # Si ya existe en la sesión, entonces actualiza los valores
             self.game_controller = st.session_state.my_state.game_controller
             self.run_page = st.session_state.my_state.run_page
-            st.write("Estoy construyendo otra vez la pagina")
 
     def main(self):
         if self.run_page == 'main':
@@ -30,7 +29,6 @@ class GUIController:
             # Crear el leaderboard
 
         elif self.run_page == 'new_game':
-            st.write("Dos")
             self.game_controller.new_game()
             draw_main_board(self)
 
@@ -70,14 +68,7 @@ class GUIController:
                         PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '❌'), unsafe_allow_html=True)
                 cell_cont += 1
 
-    def return_to_main(self):
-        """
-        Regresa a la página principal del juego.
-        """
-        st.session_state.my_state.run_page = 'main'
-        st.rerun()
-
-    def score_emoji(self):
+    def get_emoji_for_score(self):
         """
            Determina el emoji a mostrar basado en la puntuación actual del jugador almacenada en `my_state.myscore`.
 
@@ -109,12 +100,17 @@ class GUIController:
             return '😁'
 
     def get_score_and_pending_cells_values(self):
-        return f"{self.score_emoji()} Score: {self.game_controller.current_player.score} | Pending: {self.game_controller.board.count_pending_cells()}"
+        return f"{self.get_emoji_for_score()} Score: {self.game_controller.current_player.score} | Pending: {self.game_controller.board.count_pending_cells()}"
 
     def get_refresh_interval(self):
         """
         Obtiene el intervalo de tiempo en milisegundos para el autorefrescamiento de la página.
         """
         return self.game_controller.selected_difficulty['sec_interval_for_autogen'] * 1000
-    def verify_pressed_cell(self):
-        pass
+
+    def back_to_main(self):
+        """
+        Regresa a la página principal del juego.
+        """
+        st.session_state.my_state.run_page = 'main'
+        st.rerun()

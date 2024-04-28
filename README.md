@@ -50,10 +50,11 @@ classDiagram
         -run_page
         +main()
         +pre_new_game_gui(selected_difficulty, player_name_country)
-        +return_to_main()
-        +score_emoji()
+        +new_game_gui()
+        +get_emoji_for_score()
         +get_score_and_pending_cells_values()
         +get_refresh_interval()
+        +back_to_main()
     }
     class Board {
         -cells_map
