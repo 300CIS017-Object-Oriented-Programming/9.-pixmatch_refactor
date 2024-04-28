@@ -121,7 +121,8 @@ class GameController:
             cell_idx:
         """
         cell = self.board.cells_map[cell_idx]
-        if cell.verify_emoji_match(self.target_emoji):
-            self.current_player.increase_score()
-        else:
+        cell.verify_emoji_match(self.target_emoji)
+        if cell.verification_result == True:
+            self.current_player.increase_score(self.selected_difficulty['points_by_difficulty'])
+        elif  cell.verification_result == False:
             self.current_player.decrease_score()
