@@ -43,7 +43,7 @@ class GUIController:
 
     def new_game_gui(self):
         # Configura y muestra los botones del tablero del juego de forma programatrica
-        for i in range(1, self.game_controller.board.board_size + 1):
+        for i in range(0, self.game_controller.board.board_size):
             # Configura las columnas para los botones del tablero.
             # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
             # La variable 'tlst' define el espacio de PressedCheckcada columna, y luego se crea un objeto de columna para cada posición.
@@ -51,10 +51,10 @@ class GUIController:
             tlst = ([1] * self.game_controller.board.board_size) + [2]  # 2 = espacio al lado derecho
             globals()['cols' + str(i)] = st.columns(tlst)
 
-        cell_cont = 1
-        for row in range(1, self.game_controller.board.board_size):
+        cell_cont = 0
+        for row in range(self.game_controller.board.board_size):
             row_str = str(row)
-            for col in range(1, self.game_controller.board.board_size):
+            for col in range(self.game_controller.board.board_size):
                 cell_to_draw = self.game_controller.board.cells_map[cell_cont]
                 globals()['cols' + row_str][col] = globals()['cols' + row_str][col].empty()
                 if cell_to_draw.verification_result is None:

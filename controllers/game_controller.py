@@ -69,7 +69,7 @@ class GameController:
             if len(self.board.get_unpressed_cells()) > 0:
                 selected_cell = random.choice(unpressed_cells_list)
                 # Asigna el emoji de la barra lateral a la celda seleccionada
-                self.board.cells_map[selected_cell].set_emoji_img(self.target_emoji)
+                self.board.cells_map[selected_cell].emoji_img = self.target_emoji
 
     def pre_new_game(self, selected_difficulty, player_name_country):
         """
@@ -92,14 +92,14 @@ class GameController:
         # Reinicia la información de los botones del juego
         # FIXME pasar esto para la clase Board, por principio de responsabilidad,
         #  esta logica es mas del Board que del controller
-        cont_row = 1
-        cont_col = 1
-        for vcell in range(1, self.board.total_cells + 1):
+        cont_row = 0
+        cont_col = 0
+        for vcell in range(self.board.total_cells):
             # Crea un objeto de celda y lo agrega al mapa de celdas del tablero
             self.board.cells_map[vcell] = BoardCell(cell_idx=vcell, row=cont_row, col=cont_col)
             cont_col += 1
             # Verifica si se ha completado una fila
-            if cont_col > self.selected_difficulty['board_size']:
+            if cont_col >= self.selected_difficulty['board_size']:
                 cont_col = 1  # Reinicia el contador de columnnas cada vez que termina una fila
                 cont_row += 1  # Incrementa el contador de filas para indicar que va en la fila siguiente
 
