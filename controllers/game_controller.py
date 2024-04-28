@@ -60,7 +60,7 @@ class GameController:
             emoji_index = random.randint(0, len(self.emoji_bank) - 1)
             emoji = self.emoji_bank[emoji_index]
             # Actualiza el emoji de la celda
-            self.board.cells_map[unpressed_cell].set_emoji_img(emoji)
+            self.board.cells_map[unpressed_cell].emoji_img=emoji
             if emoji == self.target_emoji:
                 sidebar_emoji_in_list = True
 
@@ -121,7 +121,8 @@ class GameController:
             cell_idx:
         """
         cell = self.board.cells_map[cell_idx]
-        if cell.verify_emoji_match(self.target_emoji):
-            self.current_player.increase_score()
-        else:
+        cell.verify_emoji_match(self.target_emoji)
+        if cell.verification_result == True:
+            self.current_player.increase_score(self.selected_difficulty['points_by_difficulty'])
+        elif  cell.verification_result == False:
             self.current_player.decrease_score()

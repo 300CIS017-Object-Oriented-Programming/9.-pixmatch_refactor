@@ -17,21 +17,3 @@ class BoardCell:
             self.verification_result = True
         else:
             self.verification_result = False
-
-
-    def set_emoji_img(self, img):
-        self.emoji_img = img
-    def get_verification_result(self):
-        return self.verification_result
-
-    def get_id(self):
-        return self.id
-
-    def get_row(self):
-        return self.row
-
-    def get_col(self):
-        return self.col
-
-    def get_emoji_img(self):
-        return self.emoji_img

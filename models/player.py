@@ -11,8 +11,8 @@ class Player:
             return None
         return f"Player: {self.player_name_country}, Score: {self.score}"
 
-    def increase_score(self, difficulty):
-        self.score += difficulty.points_by_difficulty
+    def increase_score(self, difficulty_points):
+        self.score += difficulty_points
 
     def decrease_score(self):
         self.score -= 1

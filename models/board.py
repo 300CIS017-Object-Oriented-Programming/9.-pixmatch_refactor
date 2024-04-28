@@ -29,5 +29,5 @@ class Board:
     def get_cell_by_idx(self, idx):
         return self.cells_map.get(idx)
 
-    def add_expired_cell(self, cell_id):
+    def add_expired_cell(self, idx):
         pass

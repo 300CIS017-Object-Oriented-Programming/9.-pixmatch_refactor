@@ -77,7 +77,7 @@ classDiagram
         -col = 0
         -emoji_img: string
         +BoardCell(cell_idx,row,col)
-        +verify_emoji_match()
+        +verify_emoji_match(target_emoji)
     }
     class LeaderBoardManager {
         +create_leader_board(player)
@@ -88,7 +88,9 @@ classDiagram
         -player_name_country
         -score
         
-        + Player(player_name_country)
+        +Player(player_name_country)
+        +increase_score(difficulty_points)
+        +decrease_score()
     }
     class MainView {
         +draw_main_page(gui_controller)
