@@ -1,6 +1,7 @@
 import streamlit as st
 
 from controllers.game_controller import GameController
+from settings import PRESSED_EMOJI_HTML_TEMPLATE
 from view.main_view import draw_main_page, draw_main_board
 
 
@@ -30,9 +31,9 @@ class GUIController:
 
         elif self.run_page == 'new_game':
             st.write("Dos")
-
             self.game_controller.new_game()
             draw_main_board(self)
+            self.new_game_gui()
 
     def pre_new_game_gui(self, selected_difficulty, player_name_country):
         # Inicializa el tablero
@@ -40,6 +41,39 @@ class GUIController:
         # Actualiza la página a la vista del tablero de juego
         st.session_state.my_state.run_page = 'new_game'
         st.rerun()
+
+    def PressedCheck(self,vcell):
+        pass
+
+    def new_game_gui(self):
+        # Configura y muestra los botones del tablero del juego de forma programatrica
+        for i in range(1, self.game_controller.board.board_size + 1):
+            # Configura las columnas para los botones del tablero.
+            # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
+            # La variable 'tlst' define el espacio de PressedCheckcada columna, y luego se crea un objeto de columna para cada posición.
+
+            tlst = ([1] * self.game_controller.board.board_size) + [2]  # 2 = espacio al lado derecho
+            globals()['cols' + str(i)] = st.columns(tlst)
+
+        cell_cont = 1
+        for row in range(1, self.game_controller.board.board_size):
+            row_str = str(row)
+            for col in range(1, self.game_controller.board.board_size):
+                col_str = str(col)
+                globals()['cols' + row_str][col] = globals()['cols' + row_str][col].empty()
+                if self.game_controller.board.get_cell_by_idx(cell_cont).verification_result is None:
+                    vemoji = self.game_controller.board.get_cell_by_idx(cell_cont).emoji_img
+                    globals()['cols' + row_str][col].button(vemoji, on_click=self.game_controller.board.get_cell_by_idx(cell_cont).check_emoji_match(self.game_controller.target_emoji), args=(cell_cont,),
+                                                            key=f"B{cell_cont}")
+
+                elif self.game_controller.board.get_cell_by_idx(cell_cont).verification_result == True:
+                    globals()['cols' + row_str][col].markdown(
+                        PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '✅️'), unsafe_allow_html=True)
+
+                elif self.game_controller.board.get_cell_by_idx(cell_cont).verification_result == True:
+                    globals()['cols' + row_str][col].markdown(
+                        PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '❌'), unsafe_allow_htmlggi=True)
+                cell_cont += 1
 
     def return_to_main(self):
         """

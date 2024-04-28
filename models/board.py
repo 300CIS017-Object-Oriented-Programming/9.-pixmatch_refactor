@@ -26,5 +26,8 @@ class Board:
         pending_cells = self.total_cells - len(self.expired_cells_list)
         return pending_cells
 
+    def get_cell_by_idx(self, idx):
+        return self.cells_map.get(idx)
+
     def add_expired_cell(self, cell_id):
         pass

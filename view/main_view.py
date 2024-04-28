@@ -6,7 +6,7 @@ from PIL import Image
 from streamlit_autorefresh import st_autorefresh
 
 from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH, DIFFICULTY_LEVELS_OPTIONS, PURPLE_BUTTON_HTML_TEMPLATE, \
-    IMAGES_PATH, FILES_PATH, TARGET_EMOJI_HTML_TEMPLATE
+    IMAGES_PATH, FILES_PATH, TARGET_EMOJI_HTML_TEMPLATE, PRESSED_EMOJI_HTML_TEMPLATE
 
 
 def draw_instructions(st):
@@ -85,12 +85,12 @@ def draw_main_board(gui_controller):
 
             st.markdown(TARGET_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', gui_controller.game_controller.target_emoji), True)
 
-            # Temporizador de autorefrescamiento que resta puntos si el tiempo se agota
-            aftimer = st_autorefresh(interval=(gui_controller.get_refresh_interval()), key="aftmr")
+            # Temporizador de autorefrescamiento que resta puntos si el tiempo se agota pendiente por agregar
+            #aftimer = st_autorefresh(interval=(gui_controller.get_refresh_interval()), key="aftmr")
 
-            if aftimer > 0:
+            #if aftimer > 0:
                 # Se agotó el tiempo para seleccionar un emoji, entonces reduce el puntaje del jugador
-                gui_controller.game_controller.current_player.decrease_score()
+               #gui_controller.game_controller.current_player.decrease_score()
 
             st.info(gui_controller.get_score_and_pending_cells_values())
 
@@ -106,14 +106,8 @@ def draw_main_board(gui_controller):
         st.markdown("<style> div[class^='css-1vbkxwb'] > p { font-size: 1.5rem; } </style> ",
                     unsafe_allow_html=True)  # make button face big
 
-        # Configura y muestra los botones del tablero del juego de forma programatrica
-        for i in range(1, gui_controller.game_controller.board.board_size + 1):
-            # Configura las columnas para los botones del tablero.
-            # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
-            # La variable 'tlst' define el espacio de cada columna, y luego se crea un objeto de columna para cada posición.
 
-            tlst = ([1] * gui_controller.game_controller.board.board_size) + [2]  # 2 = espacio al lado derecho
-            globals()['cols' + str(i)] = st.columns(tlst)
+
 
         # FIXME terminar de pintar el tablero principal y todas sus interacciones
         st.write("Soy tablero principal")

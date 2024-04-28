@@ -3,7 +3,9 @@ import random
 from models.board import Board
 from models.board_cell import BoardCell
 from models.player import Player
-from settings import EMOJIS_CATEGORIES_EASY, EMOJIS_CATEGORIES_MEDIUM, EMOJIS_CATEGORIES_HARD, DIFFICULTY_LEVELS_OPTIONS
+from settings import EMOJIS_CATEGORIES_EASY, EMOJIS_CATEGORIES_MEDIUM, EMOJIS_CATEGORIES_HARD, \
+    DIFFICULTY_LEVELS_OPTIONS, HOUSES
+
 
 class GameController:
     def __init__(self):
@@ -64,7 +66,7 @@ class GameController:
 
         # Asegurar que el emoji de la barra lateral está al menos una vez en el tablero
         if not sidebar_emoji_in_list:
-            if self.board.get_unpressed_cells().size > 0:
+            if len(self.board.get_unpressed_cells()) > 0:
                 selected_cell = random.choice(unpressed_cells_list)
                 # Asigna el emoji de la barra lateral a la celda seleccionada
                 self.board.cells_map[selected_cell].set_emoji_img(self.target_emoji)
@@ -88,7 +90,8 @@ class GameController:
         self.pick_emoji_bank()
 
         # Reinicia la información de los botones del juego
-        # FIXME pasar esto para la clase Board, por principio de responsabilidad, esta logica es mas del Board que del controller
+        # FIXME pasar esto para la clase Board, por principio de responsabilidad,
+        #  esta logica es mas del Board que del controller
         cont_row = 1
         cont_col = 1
         for vcell in range(1, self.board.total_cells + 1):
