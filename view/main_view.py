@@ -1,6 +1,7 @@
 import base64
 import random
 
+import time as tm
 import streamlit as st
 from PIL import Image
 from streamlit_autorefresh import st_autorefresh
@@ -9,7 +10,7 @@ from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH, DIFFICULTY_LEVEL
     IMAGES_PATH, FILES_PATH, TARGET_EMOJI_HTML_TEMPLATE, PRESSED_EMOJI_HTML_TEMPLATE
 
 
-def draw_instructions(st):
+def draw_instructions():
     # Detalles y ayuda del juego
     instruccions_html_text = f"""<span style="font-size: 26px;">
            <ol>
@@ -56,14 +57,13 @@ def draw_main_page(gui_controller):
             st.image(sidebar_logo, use_column_width='auto')
 
         # Mostrar la página inicial con reglas e instrucciones
-        draw_instructions(st)
+        draw_instructions()
 
         # Configuración de la barra lateral para entradas de usuario y opciones
         with st.sidebar:
             # Selección de nivel de dificultad
             selected_difficulty = st.radio('Difficulty Level:', options=('Easy', 'Medium', 'Hard'), index=1,
                                            horizontal=True, )
-
             st.write(f'La dificultad seleccionada fue {selected_difficulty}')
             # Entrada para el nombre del jugador y el país
             player_name_country = st.text_input("Player Name, Country", placeholder='Shawn Pereira, India',
@@ -78,43 +78,54 @@ def draw_main_page(gui_controller):
 def draw_main_board(gui_controller):
 
         reduce_gap_from_page_top('sidebar')
-
-        with st.sidebar:
-            st.subheader(f"🖼️ Pix Match: {gui_controller.game_controller.current_player.player_name_country}")
-            st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
-            st.markdown(TARGET_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', gui_controller.game_controller.target_emoji), True)
-
-            # Temporizador de autorefrescamiento que resta puntos si el tiempo se agota pendiente por agregar
-            #aftimer = st_autorefresh(interval=(gui_controller.get_refresh_interval()), key="aftmr")
-
-            #if aftimer > 0:
-                # Se agotó el tiempo para seleccionar un emoji, entonces reduce el puntaje del jugador
-               #gui_controller.game_controller.current_player.decrease_score()
-
-            st.info(gui_controller.get_score_and_pending_cells_values())
-
-            st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
-            if st.button(f"🔙 Return to Main Page", use_container_width=True):
-                gui_controller.back_to_main()
-
-
+        # Dibujar la barra lateral que tiene el emoji a buscar y el botón de regreso
+        draw_lateral_bar_new_game(gui_controller)
         st.subheader("Picture Positions:")
         st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
-
-        # Set Board Dafaults
+        # Set Board Defaults
         st.markdown("<style> div[class^='css-1vbkxwb'] > p { font-size: 1.5rem; } </style> ",
                     unsafe_allow_html=True)  # make button face big
 
         # Dibujar la matriz del tablero
         gui_controller.new_game_gui()
 
+        st.caption('')  # vertical filler
+        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+
+        # Lógica para controlar mensajes de fin de juego cuando se ha terminado
+        draw_end_game_info(gui_controller)
+
+
+def draw_end_game_info(gui_controller):
+    if gui_controller.game_controller.verify_game_status() != 'ACTIVE':
+        # Mostrar mensaje de victoria o derrota
+        if gui_controller.game_controller.verify_game_status() == 'WIN':
+            st.success("🎉 You won! 🎉")
+            st.balloons()
+            st.info(gui_controller.get_score_and_pending_cells_values())
+            st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+        elif gui_controller.game_controller.verify_game_status() == 'LOOSE':
+            st.error("😢 You lost! 😢")
+            st.snow()  # Muestra animación de nieve si el puntaje es cero o negativo
+        tm.sleep(5)
+        gui_controller.back_to_main()
+    else:
+        pass # No se hace nada si el juego sigue activo
+def draw_lateral_bar_new_game(gui_controller):
+    with st.sidebar:
+        st.subheader(f"🖼️ Pix Match: {gui_controller.game_controller.current_player.player_name_country}")
+        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+        st.markdown(TARGET_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', gui_controller.game_controller.target_emoji),
+                    True)
+
+        st.info(gui_controller.get_score_and_pending_cells_values())
+
+        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+        if st.button(f"🔙 Return to Main Page", use_container_width=True):
+            gui_controller.back_to_main()
 
 def draw_leaderboard_ranking(st, leaderboar):
     pass
-
-def draw_target_emoji(st, emoji):
-    pass
-
 
 def reduce_gap_from_page_top(section_to_adjust):
     if section_to_adjust == 'main page':

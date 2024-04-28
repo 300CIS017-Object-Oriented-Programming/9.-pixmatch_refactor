@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_autorefresh import st_autorefresh
 
 from controllers.game_controller import GameController
 from settings import PRESSED_EMOJI_HTML_TEMPLATE
@@ -40,7 +41,7 @@ class GUIController:
         st.rerun()
 
     def new_game_gui(self):
-        # Configura y muestra los botones del tablero del juego de forma programatrica
+        # Configura y muestra los botones del tablero del juego de forma programatica
         for i in range(0, self.game_controller.board.board_size):
             # Configura las columnas para los botones del tablero.
             # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
@@ -67,6 +68,21 @@ class GUIController:
                     globals()['cols' + row_str][col].markdown(
                         PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '❌'), unsafe_allow_html=True)
                 cell_cont += 1
+
+        # Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada
+        # self.autorefresh_page()
+
+
+    def autorefresh_page(self):
+        """
+        Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada.
+        """
+        # Temporizador de autorefrescamiento que resta puntos si el tiempo se agota pendiente por agregar
+        aftimer = st_autorefresh(interval=(self.get_refresh_interval()), key="aftmr")
+
+        if aftimer > 0:
+        # Se agotó el tiempo para seleccionar un emoji, entonces reduce el puntaje del jugador
+            self.game_controller.current_player.decrease_score()
 
     def get_emoji_for_score(self):
         """

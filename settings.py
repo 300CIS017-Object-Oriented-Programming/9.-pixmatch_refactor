@@ -4,7 +4,7 @@ MAX_LEADERBOARD_PLAYERS = 3  # Settings
 LEADERBOARD_FILE_NAME = 'leaderboard.json'  # Settings
 
 # Mapa que representa los niveles de dificultad del juego, con sus respectivas configuraciones.
-DIFFICULTY_LEVELS_OPTIONS = {'Easy': {'sec_interval_for_autogen': 8, 'points_by_difficulty': 5, 'board_size': 6, 'name':'Easy'},
+DIFFICULTY_LEVELS_OPTIONS = {'Easy': {'sec_interval_for_autogen': 8, 'points_by_difficulty': 5, 'board_size': 3, 'name':'Easy'},
                              'Medium': {'sec_interval_for_autogen': 6, 'points_by_difficulty': 3, 'board_size': 7, 'name':'Medium'},
                              'Hard': {'sec_interval_for_autogen': 65, 'points_by_difficulty': 1, 'board_size': 8, 'name':'Hard'}}
 

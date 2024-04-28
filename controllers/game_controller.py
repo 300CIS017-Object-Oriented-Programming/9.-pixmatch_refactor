@@ -1,10 +1,9 @@
 import random
 
 from models.board import Board
-from models.board_cell import BoardCell
 from models.player import Player
 from settings import EMOJIS_CATEGORIES_EASY, EMOJIS_CATEGORIES_MEDIUM, EMOJIS_CATEGORIES_HARD, \
-    DIFFICULTY_LEVELS_OPTIONS, HOUSES
+    DIFFICULTY_LEVELS_OPTIONS
 
 
 class GameController:
@@ -60,7 +59,7 @@ class GameController:
             emoji_index = random.randint(0, len(self.emoji_bank) - 1)
             emoji = self.emoji_bank[emoji_index]
             # Actualiza el emoji de la celda
-            self.board.cells_map[unpressed_cell].emoji_img=emoji
+            self.board.cells_map[unpressed_cell].emoji_img = emoji
             if emoji == self.target_emoji:
                 sidebar_emoji_in_list = True
 
@@ -99,10 +98,19 @@ class GameController:
         self.reset_board()
 
     def verify_game_status(self):
-        """ Si las celdas pendientes son 0, entonces el juego ha terminado
+        """
+             Verifica si el juego sigue en curso, si el jugador ha ganado o perdido.
+        Returns:
+           'ACTIVE' si el juego sigue en curso, 'WIN' si el jugador ha ganado, 'LOOSE' si el jugador ha perdido.
         """
         if self.board.count_pending_cells() == 0:
-            self.game_status = 'FINISHED'
+            if self.current_player.score < 0:
+                self.game_status = 'LOOSE'
+            elif self.current_player.score > 0:
+                self.game_status = 'WIN'
+        else:
+            self.game_status = 'ACTIVE'
+        return self.game_status
 
     def play(self, cell_idx):
         """
@@ -115,7 +123,7 @@ class GameController:
         cell.verify_emoji_match(self.target_emoji)
         if cell.verification_result == True:
             self.current_player.increase_score(self.selected_difficulty['points_by_difficulty'])
-        elif  cell.verification_result == False:
+        elif cell.verification_result == False:
             self.current_player.decrease_score()
 
         # Agrega la celda a la lista de celdas que ya fueron usadas

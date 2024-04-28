@@ -23,7 +23,11 @@ para favorcer la mantenibilidad del código fuente.
 * Ver el código fuente del proyecto
 
 ### Por hacer
-1. Intente correr el proyecto, identifique el script que inicia la interacción y ejecute el compato streamlit run `nombre.py`
+1. Agregar lógica para que si el jugador a fallado en más del 50% + 1 de las celdas el juego termine
+2. Mostrar en la interfaz gráfica, al lado de "Picture positions" la colección de emojis que se estan usando en el juego
+3. Agregar un bonus aleatorio en alguna celda del juego. Este bonus cambia de posición en cada interacción y cuando se descubre suma 5 puntos al puntaje del jugador. Si el bonus se descubre se le avisa al jugador y se vuelve a ubicar en las celdas que no han sido destapadas, siempre y cuando falten más del 20% de las celdas por destapar. El botón que destapó el bonus debe tener un icono que lo identifique
+4. Ajustar parametrización de dificultad para poder cambiar el tamaño del tablero predefinido por dificultad
+5. Ajustar parametrización inicial para activar o desactivar el autorefresco de la página. Por defecto debe estar desactivado
 
 
 
@@ -61,7 +65,7 @@ classDiagram
         -expired_cells_list
         -board_size
         -total_cells 
-        +update_cell()
+        +prepare_board()
         +get_unpressed_cells()
         +count_pending_cells()
         +get_cell_by_idx()
@@ -90,8 +94,12 @@ classDiagram
         +decrease_score()
     }
     class MainView {
+        +draw_instructions()
         +draw_main_page(gui_controller)
         +draw_main_board(gui_controller)
+        +draw_end_game_info(gui_controller)
+        +draw_lateral_bar_new_game(gui_controller)
+        +reduce_gap_from_page_top(section_to_adjust)
     }
     class App {
         +main()
