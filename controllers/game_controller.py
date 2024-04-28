@@ -90,28 +90,19 @@ class GameController:
         self.pick_emoji_bank()
 
         # Reinicia la información de los botones del juego
-        # FIXME pasar esto para la clase Board, por principio de responsabilidad,
-        #  esta logica es mas del Board que del controller
-        cont_row = 0
-        cont_col = 0
-        for vcell in range(self.board.total_cells):
-            # Crea un objeto de celda y lo agrega al mapa de celdas del tablero
-            self.board.cells_map[vcell] = BoardCell(cell_idx=vcell, row=cont_row, col=cont_col)
-            cont_col += 1
-            # Verifica si se ha completado una fila
-            if cont_col >= self.selected_difficulty['board_size']:
-                cont_col = 1  # Reinicia el contador de columnnas cada vez que termina una fila
-                cont_row += 1  # Incrementa el contador de filas para indicar que va en la fila siguiente
+        self.board.prepare_board()
 
         self.game_status = 'ACTIVE'
 
     def new_game(self):
-
         # Reinicia el tablero del juego
         self.reset_board()
 
     def verify_game_status(self):
-        pass
+        """ Si las celdas pendientes son 0, entonces el juego ha terminado
+        """
+        if self.board.count_pending_cells() == 0:
+            self.game_status = 'FINISHED'
 
     def play(self, cell_idx):
         """
