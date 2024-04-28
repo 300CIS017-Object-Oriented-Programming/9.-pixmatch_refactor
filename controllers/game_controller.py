@@ -126,3 +126,6 @@ class GameController:
             self.current_player.increase_score(self.selected_difficulty['points_by_difficulty'])
         elif  cell.verification_result == False:
             self.current_player.decrease_score()
+
+        # Agrega la celda a la lista de celdas que ya fueron usadas
+        self.board.add_expired_cell(cell_idx)

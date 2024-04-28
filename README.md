@@ -66,9 +66,10 @@ classDiagram
         -board_size
         -total_cells 
         +update_cell()
+        +get_unpressed_cells()
         +count_pending_cells()
-        +get_pending_cells()
-        +reset_board()
+        +get_cell_by_idx()
+        +add_expired_cell(cell_idx)
     }
     class BoardCell {
         -cell_idx
