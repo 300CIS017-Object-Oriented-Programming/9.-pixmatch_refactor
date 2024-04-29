@@ -96,7 +96,7 @@ classDiagram
     class MainView {
         +draw_instructions()
         +draw_main_page(gui_controller)
-        +draw_main_board(gui_controller)
+        +draw_new_game_board(gui_controller)
         +draw_end_game_info(gui_controller)
         +draw_lateral_bar_new_game(gui_controller)
         +reduce_gap_from_page_top(section_to_adjust)

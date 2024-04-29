@@ -3,7 +3,7 @@ from streamlit_autorefresh import st_autorefresh
 
 from controllers.game_controller import GameController
 from settings import PRESSED_EMOJI_HTML_TEMPLATE
-from view.main_view import draw_main_page, draw_main_board
+from view.main_view import draw_main_page, draw_new_game_board
 
 
 class GUIController:
@@ -26,12 +26,10 @@ class GUIController:
     def main(self):
         if self.run_page == 'main':
             draw_main_page(self)
-            # FIXME
-            # Crear el leaderboard
 
         elif self.run_page == 'new_game':
             self.game_controller.new_game()
-            draw_main_board(self)
+            draw_new_game_board(self)
 
     def pre_new_game_gui(self, selected_difficulty, player_name_country):
         # Inicializa el tablero
@@ -41,7 +39,7 @@ class GUIController:
         st.rerun()
 
     def new_game_gui(self):
-        # Configura y muestra los botones del tablero del juego de forma programatica
+        # Configura y muestra los botones del tablero del juego de forma programática
         for i in range(0, self.game_controller.board.board_size):
             # Configura las columnas para los botones del tablero.
             # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
@@ -71,6 +69,9 @@ class GUIController:
 
         # Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada
         # self.autorefresh_page()
+
+        # Verificar si el juego ha terminado o todavía sigue activo
+        self.game_controller.verify_game_status()
 
 
     def autorefresh_page(self):

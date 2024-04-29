@@ -62,7 +62,7 @@ def draw_main_page(gui_controller):
         # Configuración de la barra lateral para entradas de usuario y opciones
         with st.sidebar:
             # Selección de nivel de dificultad
-            selected_difficulty = st.radio('Difficulty Level:', options=('Easy', 'Medium', 'Hard'), index=1,
+            selected_difficulty = st.radio('Difficulty Level:', options=('Easy', 'Medium', 'Hard'), index=0,
                                            horizontal=True, )
             st.write(f'La dificultad seleccionada fue {selected_difficulty}')
             # Entrada para el nombre del jugador y el país
@@ -75,7 +75,7 @@ def draw_main_page(gui_controller):
             st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)  # Barra decorativa horizontal
 
 
-def draw_main_board(gui_controller):
+def draw_new_game_board(gui_controller):
 
         reduce_gap_from_page_top('sidebar')
         # Dibujar la barra lateral que tiene el emoji a buscar y el botón de regreso
@@ -96,21 +96,26 @@ def draw_main_board(gui_controller):
         draw_end_game_info(gui_controller)
 
 
+
 def draw_end_game_info(gui_controller):
-    if gui_controller.game_controller.verify_game_status() != 'ACTIVE':
+    """
+    Muestra un mensaje de victoria o derrota cuando termina el juego.
+    """
+    if gui_controller.game_controller.game_status != 'ACTIVE':
         # Mostrar mensaje de victoria o derrota
-        if gui_controller.game_controller.verify_game_status() == 'WIN':
+        if gui_controller.game_controller.game_status == 'WIN':
             st.success("🎉 You won! 🎉")
             st.balloons()
             st.info(gui_controller.get_score_and_pending_cells_values())
             st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
-        elif gui_controller.game_controller.verify_game_status() == 'LOOSE':
+        elif gui_controller.game_controller.game_status == 'LOOSE':
             st.error("😢 You lost! 😢")
             st.snow()  # Muestra animación de nieve si el puntaje es cero o negativo
         tm.sleep(5)
         gui_controller.back_to_main()
     else:
         pass # No se hace nada si el juego sigue activo
+
 def draw_lateral_bar_new_game(gui_controller):
     with st.sidebar:
         st.subheader(f"🖼️ Pix Match: {gui_controller.game_controller.current_player.player_name_country}")
@@ -124,8 +129,21 @@ def draw_lateral_bar_new_game(gui_controller):
         if st.button(f"🔙 Return to Main Page", use_container_width=True):
             gui_controller.back_to_main()
 
-def draw_leaderboard_ranking(st, leaderboar):
-    pass
+def draw_leaderboard_ranking(gui_controller):
+
+     sc0, sc1, sc2, sc3 = st.columns((2, 3, 3, 3))
+     rknt = 0
+     leaderboard = gui_controller.game_controller.get_leaderboard()
+     for key in leaderboard:
+         rknt += 1
+         if rknt == 1:
+             sc0.write('🏆 Past winners:')
+             sc1.write(f"🥇 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
+         elif rknt == 2:
+             sc2.write(f"🥈 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
+         elif rknt == 3:
+             sc3.write(f"🥉 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
+
 
 def reduce_gap_from_page_top(section_to_adjust):
     if section_to_adjust == 'main page':

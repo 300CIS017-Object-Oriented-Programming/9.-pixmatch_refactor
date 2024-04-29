@@ -1,9 +1,10 @@
 import random
 
 from models.board import Board
+from models.leaderboard_manager import LeaderBoardManager
 from models.player import Player
 from settings import EMOJIS_CATEGORIES_EASY, EMOJIS_CATEGORIES_MEDIUM, EMOJIS_CATEGORIES_HARD, \
-    DIFFICULTY_LEVELS_OPTIONS
+    DIFFICULTY_LEVELS_OPTIONS, MAX_LEADERBOARD_PLAYERS
 
 
 class GameController:
@@ -17,6 +18,7 @@ class GameController:
         self.target_emoji = None
         self.game_status = None
         self.board = None
+        self.leaderboard_manager = LeaderBoardManager()
 
     def pick_emoji_bank(self):
         """
@@ -91,26 +93,17 @@ class GameController:
         # Reinicia la información de los botones del juego
         self.board.prepare_board()
 
+        # Indica que el juego esta activo
         self.game_status = 'ACTIVE'
+
+        # Crea el leaderboard si no existe y el jugador puso el nombre
+        if self.current_player.player_name_country != "":
+            self.leaderboard_manager.create_leader_board()
+
 
     def new_game(self):
         # Reinicia el tablero del juego
         self.reset_board()
-
-    def verify_game_status(self):
-        """
-             Verifica si el juego sigue en curso, si el jugador ha ganado o perdido.
-        Returns:
-           'ACTIVE' si el juego sigue en curso, 'WIN' si el jugador ha ganado, 'LOOSE' si el jugador ha perdido.
-        """
-        if self.board.count_pending_cells() == 0:
-            if self.current_player.score < 0:
-                self.game_status = 'LOOSE'
-            elif self.current_player.score > 0:
-                self.game_status = 'WIN'
-        else:
-            self.game_status = 'ACTIVE'
-        return self.game_status
 
     def play(self, cell_idx):
         """
@@ -128,3 +121,20 @@ class GameController:
 
         # Agrega la celda a la lista de celdas que ya fueron usadas
         self.board.add_expired_cell(cell_idx)
+
+    def verify_game_status(self):
+        """
+             Verifica si el juego sigue en curso, si el jugador ha ganado o perdido.
+        Returns:
+           'ACTIVE' si el juego sigue en curso, 'WIN' si el jugador ha ganado, 'LOOSE' si el jugador ha perdido.
+        """
+        if self.board.count_pending_cells() == 0:
+            if self.current_player.score < 0:
+                self.game_status = 'LOOSE'
+            elif self.current_player.score > 0:
+                self.game_status = 'WIN'
+                # Actualiza el leaderboard solo si gana
+                self.leaderboard_manager.update_leader_board(player=self.current_player, MAX_PLAYERS= MAX_LEADERBOARD_PLAYERS)
+        else:
+            self.game_status = 'ACTIVE'
+        return self.game_status
