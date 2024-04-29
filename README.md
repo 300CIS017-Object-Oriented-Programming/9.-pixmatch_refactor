@@ -98,8 +98,11 @@ classDiagram
         +verify_emoji_match(target_emoji)
     }
     class LeaderBoardManager {
+        -leaderboard_file_name_path
+    
         +create_leader_board()
         +read_leader_board()
+        +sort_leader_board_data()
         +update_leader_board(player, MAX_PLAYERS)
     }
     class Player {
