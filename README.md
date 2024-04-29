@@ -42,6 +42,8 @@ para favorcer la mantenibilidad del código fuente.
 4. Ajustar parametrización de dificultad para poder cambiar el tamaño del tablero predefinido por dificultad
 5. Ajustar parametrización inicial para activar o desactivar el autorefresco de la página. Por defecto debe estar
    desactivado
+6. **RETO:** Me gustaría que los botones que muestran los emojis fueran más grandes. Esto implica interacción con html. ¿Cómo
+   haría esto?
 
 ## Diagrama del proyecto
 

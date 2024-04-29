@@ -45,7 +45,7 @@ BLUE_SIGNS = ['🚾', '♿️', '🅿️', '🈂️', '🛂', '🛃', '🛄', '�
 MOON = ['🌕', '🌔', '🌓', '🌗', '🌒', '🌖', '🌑', '🌜', '🌛', '🌙']
 
 # Categorías de emojis disponibles en el juego según nivel de difcultad
-EMOJIS_CATEGORIES_EASY = ['FOODS', 'MOON', 'ANIMALS']
+EMOJIS_CATEGORIES_EASY = [FOODS, MOON, ANIMALS]
 EMOJIS_CATEGORIES_MEDIUM = ['FOXES', 'EMOJIS', 'HUMANS', 'VEHICLES', 'HOUSES', 'HANDS', 'PURPLE_SIGNS', 'RED_SIGNS',
                             'BLUE_SIGNS']
 
