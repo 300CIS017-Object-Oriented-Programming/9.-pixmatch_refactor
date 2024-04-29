@@ -1,13 +1,11 @@
-import base64
 import random
-
 import time as tm
+
 import streamlit as st
 from PIL import Image
-from streamlit_autorefresh import st_autorefresh
 
-from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH, DIFFICULTY_LEVELS_OPTIONS, PURPLE_BUTTON_HTML_TEMPLATE, \
-    IMAGES_PATH, FILES_PATH, TARGET_EMOJI_HTML_TEMPLATE, PRESSED_EMOJI_HTML_TEMPLATE, MAX_LEADERBOARD_PLAYERS
+from settings import HORIZONTAL_BAR_HTML_TEMPLATE, PURPLE_BUTTON_HTML_TEMPLATE, \
+    IMAGES_PATH, TARGET_EMOJI_HTML_TEMPLATE, MAX_LEADERBOARD_PLAYERS
 
 
 def draw_instructions():
@@ -134,7 +132,6 @@ def draw_lateral_bar_new_game(gui_controller):
 
 
 def draw_leaderboard_ranking(gui_controller):
-
     # Crear una lista con el ancho de las columnas
     # La primera columna tiene un ancho fijo de 2
     # Las columnas restantes tienen un ancho dinámico de 1
@@ -145,11 +142,12 @@ def draw_leaderboard_ranking(gui_controller):
 
     leaderboard = gui_controller.game_controller.leaderboard_ranking
 
-    #La primera columna enunciara el texto de ganadores por eso es columns[0
+    # La primera columna enunciara el texto de ganadores por eso es columns[0
     columns[0].write('🏆 Past winners:')
     for idx, (key, value) in enumerate(leaderboard.items()):
         if idx < MAX_LEADERBOARD_PLAYERS:
-            columns[idx+1].write(f"'🥇' | {value['NameCountry']}: {value['HighestScore']}")
+            columns[idx + 1].write(f"'🥇' | {value['NameCountry']}: {value['HighestScore']}")
+
 
 def reduce_gap_from_page_top(section_to_adjust):
     if section_to_adjust == 'main page':

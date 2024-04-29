@@ -4,9 +4,10 @@ MAX_LEADERBOARD_PLAYERS = 5  # Settings
 LEADERBOARD_FILE_NAME = 'leaderboard.json'  # Settings
 
 # Mapa que representa los niveles de dificultad del juego, con sus respectivas configuraciones.
-DIFFICULTY_LEVELS_OPTIONS = {'Easy': {'sec_interval_for_autogen': 8, 'points_by_difficulty': 5, 'board_size': 3, 'name':'Easy'},
-                             'Medium': {'sec_interval_for_autogen': 6, 'points_by_difficulty': 3, 'board_size': 7, 'name':'Medium'},
-                             'Hard': {'sec_interval_for_autogen': 65, 'points_by_difficulty': 1, 'board_size': 8, 'name':'Hard'}}
+DIFFICULTY_LEVELS_OPTIONS = {
+    'Easy': {'sec_interval_for_autogen': 8, 'points_by_difficulty': 5, 'board_size': 3, 'name': 'Easy'},
+    'Medium': {'sec_interval_for_autogen': 6, 'points_by_difficulty': 3, 'board_size': 7, 'name': 'Medium'},
+    'Hard': {'sec_interval_for_autogen': 65, 'points_by_difficulty': 1, 'board_size': 8, 'name': 'Hard'}}
 
 # Banco de emojis disponibles en el juego
 FOXES = ['😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾']
@@ -48,10 +49,8 @@ EMOJIS_CATEGORIES_EASY = ['FOODS', 'MOON', 'ANIMALS']
 EMOJIS_CATEGORIES_MEDIUM = ['FOXES', 'EMOJIS', 'HUMANS', 'VEHICLES', 'HOUSES', 'HANDS', 'PURPLE_SIGNS', 'RED_SIGNS',
                             'BLUE_SIGNS']
 
-
 EMOJIS_CATEGORIES_HARD = ['FOXES', 'EMOJIS', 'HUMANS', 'FOODS', 'CLOCKS', 'HANDS', 'ANIMALS', 'VEHICLES', 'HOUSES',
                           'PURPLE_SIGNS', 'RED_SIGNS', 'BLUE_SIGNS', 'MOON']
-
 
 # HTML templates
 

@@ -56,7 +56,8 @@ class GUIController:
                 globals()['cols' + row_str][col] = globals()['cols' + row_str][col].empty()
                 if cell_to_draw.verification_result is None:
                     vemoji = cell_to_draw.emoji_img
-                    globals()['cols' + row_str][col].button(vemoji, on_click=self.game_controller.play, args =(cell_cont,),
+                    globals()['cols' + row_str][col].button(vemoji, on_click=self.game_controller.play,
+                                                            args=(cell_cont,),
                                                             key=f"B{cell_cont}")
                 elif cell_to_draw.verification_result == True:
                     globals()['cols' + row_str][col].markdown(
@@ -70,7 +71,6 @@ class GUIController:
         # Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada
         # self.autorefresh_page()
 
-
     def autorefresh_page(self):
         """
         Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada.
@@ -79,7 +79,7 @@ class GUIController:
         aftimer = st_autorefresh(interval=(self.get_refresh_interval()), key="aftmr")
 
         if aftimer > 0:
-        # Se agotó el tiempo para seleccionar un emoji, entonces reduce el puntaje del jugador
+            # Se agotó el tiempo para seleccionar un emoji, entonces reduce el puntaje del jugador
             self.game_controller.current_player.decrease_score()
 
     def get_emoji_for_score(self):

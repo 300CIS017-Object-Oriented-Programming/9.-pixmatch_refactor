@@ -3,15 +3,17 @@ import os
 
 from settings import LEADERBOARD_FILE_NAME, FILES_PATH
 
+
 class LeaderBoardManager:
     """
     Clase para manejar el leaderboard del juego. Guarda y lee el leaderboard en un archivo JSON.
     """
+
     def __init__(self):
         self.leaderboard_file_name_path = os.path.join(FILES_PATH, LEADERBOARD_FILE_NAME)
 
     def create_leader_board(self):
-       if os.path.isfile(self.leaderboard_file_name_path) == False:
+        if os.path.isfile(self.leaderboard_file_name_path) == False:
             tmpdict = {}
             # Crea el archivo de leaderboard vacío
             json.dump(tmpdict, open(self.leaderboard_file_name_path, 'w'))  # write file
@@ -29,7 +31,7 @@ class LeaderBoardManager:
             # Controla el caso en el que e lederboard no existe
             raise Exception("Leaderboard file does not exist")
 
-    def sort_leader_board_data(self,leaderboard_dicc):
+    def sort_leader_board_data(self, leaderboard_dicc):
         """
         Ordena el diccionario del leaderboard de mayor a menor puntaje.
         Args:
@@ -37,7 +39,8 @@ class LeaderBoardManager:
         Returns: diccionario ordenado de mayor a menor puntaje
         """
         # Item[1] es el diccionario con la información del jugador
-        sorted_items = sorted(leaderboard_dicc.items(), key= lambda dicc_item: dicc_item[1]['HighestScore'], reverse=True)
+        sorted_items = sorted(leaderboard_dicc.items(), key=lambda dicc_item: dicc_item[1]['HighestScore'],
+                              reverse=True)
         # Crea un nuevo diccionario con las claves actualizadas
         leaderboard_dicc = {}
         for i, item in enumerate(sorted_items, start=1):
@@ -57,14 +60,14 @@ class LeaderBoardManager:
         leaderboard_dict_lngth = len(leaderboard_dicc)
 
         if leaderboard_dict_lngth >= MAX_PLAYERS:  # Se llegó al máximo de jugadores en el leaderboard
-            leaderboard_min_score =  leaderboard_dicc[str(MAX_PLAYERS)]['HighestScore']
+            leaderboard_min_score = leaderboard_dicc[str(MAX_PLAYERS)]['HighestScore']
             if player.score > leaderboard_min_score:
                 # El puntaje del jugador actual supera al puntaje mínimo del leaderboard
                 # Solo se dejan en el diccionario el máximo de elementos (menos uno) para agregar como último elemento posible el jugador actual
-                for i in range(leaderboard_dict_lngth - (MAX_PLAYERS-1) ):
+                for i in range(leaderboard_dict_lngth - (MAX_PLAYERS - 1)):
                     leaderboard_dicc.popitem()
                 leaderboard_dicc[str(MAX_PLAYERS)] = {'NameCountry': player.player_name_country,
-                                                 'HighestScore': player.score}
+                                                      'HighestScore': player.score}
         else:
             leaderboard_dicc[str(leaderboard_dict_lngth + 1)] = {'NameCountry': player.player_name_country,
                                                                  'HighestScore': player.score}

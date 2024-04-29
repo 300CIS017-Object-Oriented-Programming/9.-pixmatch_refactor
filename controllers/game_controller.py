@@ -18,7 +18,7 @@ class GameController:
         self.target_emoji = None
         self.game_status = None
         self.board = None
-        self.leaderboard_ranking = {} # Diccionario con el ranking del leaderboard
+        self.leaderboard_ranking = {}  # Diccionario con el ranking del leaderboard
         self.leaderboard_manager = LeaderBoardManager()
 
     def pick_emoji_bank(self):
@@ -101,7 +101,6 @@ class GameController:
         if self.current_player.player_name_country != "":
             self.leaderboard_manager.create_leader_board()
 
-
     def new_game(self):
 
         # Reinicia el tablero del juego
@@ -143,7 +142,8 @@ class GameController:
             elif self.current_player.score > 0:
                 self.game_status = 'WIN'
                 # Actualiza el leaderboard solo si gana
-                self.leaderboard_manager.update_leader_board(player=self.current_player, MAX_PLAYERS= MAX_LEADERBOARD_PLAYERS)
+                self.leaderboard_manager.update_leader_board(player=self.current_player,
+                                                             MAX_PLAYERS=MAX_LEADERBOARD_PLAYERS)
         else:
             self.game_status = 'ACTIVE'
         return self.game_status

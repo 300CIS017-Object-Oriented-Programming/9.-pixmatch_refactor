@@ -4,9 +4,10 @@ class BoardCell:
     Util para mantener la información de la celda y verificar si el emoji seleccionado
     por el jugador coincide con el emoji objetivo.
     """
-    def __init__(self,cell_idx, row, col):
+
+    def __init__(self, cell_idx, row, col):
         self.cell_idx = cell_idx
-        self.verification_result = None #No se ha seleccionado, ni se ha verificado ninguna vez
+        self.verification_result = None  # No se ha seleccionado, ni se ha verificado ninguna vez
         self.row = row
         self.col = col
         self.emoji_img = ''
