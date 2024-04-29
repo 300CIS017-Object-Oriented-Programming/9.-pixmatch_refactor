@@ -15,13 +15,28 @@ class GUIController:
             # Agregar las variables que necesitan
 
             self.run_page = 'main'  # Asigna el método main a la variable run_page para ejecutarse
+            self.st_matrix ={} # Controla las columnas y fila a dibujar en streamlit
             # Variable necesaria para mantener el estado
             st.session_state['my_state'] = self
 
         else:
             # Si ya existe en la sesión, entonces actualiza los valores
             self.game_controller = st.session_state.my_state.game_controller
+            self.st_matrix = st.session_state.my_state.st_matrix
             self.run_page = st.session_state.my_state.run_page
+
+    def initialize_columns(self):
+
+        # Crea las columnas
+        for i in range(self.game_controller.board.board_size):
+            # Define el espacio para cada columna
+            # Configura las columnas para los botones del tablero.
+            # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
+            # La ultima columna tiene un ancho fijo de [2] para dar espacio al lado derecho
+            columns_list = ([1] * self.game_controller.board.board_size) + [2]  # 2 = espacio al lado derecho
+
+            # Agrega las columnas al diccionario que representa las filas del tablero
+            self.st_matrix[i] = st.columns(columns_list)
 
     def main(self):
         if self.run_page == 'main':
@@ -39,32 +54,27 @@ class GUIController:
         st.rerun()
 
     def new_game_gui(self):
-        # Configura y muestra los botones del tablero del juego de forma programática
-        for i in range(0, self.game_controller.board.board_size):
-            # Configura las columnas para los botones del tablero.
-            # Cada fila del tablero de juego está compuesta por un número de columnas igual al total de celdas por fila.
-            # La variable 'tlst' define el espacio de PressedCheckcada columna, y luego se crea un objeto de columna para cada posición.
-
-            tlst = ([1] * self.game_controller.board.board_size) + [2]  # 2 = espacio al lado derecho
-            globals()['cols' + str(i)] = st.columns(tlst)
-
+        # Dibuja las columnas de juego en streamlit
+        self.initialize_columns()
         cell_cont = 0
+
+        # Agrega los botones a las columnas segun corresponda en el juego
         for row in range(self.game_controller.board.board_size):
-            row_str = str(row)
+            st_row_to_draw = self.st_matrix[row]
             for col in range(self.game_controller.board.board_size):
                 cell_to_draw = self.game_controller.board.cells_map[cell_cont]
-                globals()['cols' + row_str][col] = globals()['cols' + row_str][col].empty()
+                st_cell_to_draw = st_row_to_draw[col].empty()
                 if cell_to_draw.verification_result is None:
                     vemoji = cell_to_draw.emoji_img
-                    globals()['cols' + row_str][col].button(vemoji, on_click=self.game_controller.play,
-                                                            args=(cell_cont,),
-                                                            key=f"B{cell_cont}")
+                    st_cell_to_draw.button(vemoji, on_click=self.game_controller.play,
+                                           args=(cell_cont,),
+                                           key=f"B{cell_cont}")
                 elif cell_to_draw.verification_result == True:
-                    globals()['cols' + row_str][col].markdown(
+                    st_cell_to_draw.markdown(
                         PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '✅️'), unsafe_allow_html=True)
 
                 elif cell_to_draw.verification_result == False:
-                    globals()['cols' + row_str][col].markdown(
+                    st_cell_to_draw.markdown(
                         PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '❌'), unsafe_allow_html=True)
                 cell_cont += 1
 

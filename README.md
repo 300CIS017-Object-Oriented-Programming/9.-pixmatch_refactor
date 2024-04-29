@@ -68,6 +68,7 @@ classDiagram
     class GUIController {
         -game_controller
         -run_page
+        -st_matrix
         +main()
         +pre_new_game_gui(selected_difficulty, player_name_country)
         +new_game_gui()
