@@ -20,11 +20,15 @@ para favorcer la mantenibilidad del código fuente.
 
 ## Código orientado a objetos
 * Este código fuente cumple las mismas funcionalidades que el código legacy pero tiene orientación a objetos
-* Ver el código fuente del proyecto
+* **Análisis del código actual**
+  * Compare la lógica del método ```PreNewGame``` en el código original y en el nuevo código orientado a objetos. Identifique como esta separada la lógica relacionada con la visualización con la lógica de negocio
+  * Identifique en la versión orientada a objetos en qué puntos se controla la lectura y escritura del leaderboard. Considere que una restricción es que solo se escribe y se lee el leaderboard si el jugador escribe su nombre
+
 
 ### Por hacer
 1. Agregar lógica para que si el jugador a fallado en más del 50% + 1 de las celdas el juego termine
-2. Mostrar en la interfaz gráfica, al lado de "Picture positions" la colección de emojis que se estan usando en el juego
+2. Ajuste el código para que el leaderboard sea de cuatro jugadores. Observe la diferencia entre ajustarlo en el código anterior y en esta nueva versión de código. Note como un diseño mejorado facilita el mantenimiento
+2. Agregar nueva página para que cuando se gana se muestre una página con un mensaje grande que indica que el jugador ha ganado y los globos. En esta página se debe mostrar el puntaje del jugador, y un botón para reiniciar un nuevo juego
 3. Agregar un bonus aleatorio en alguna celda del juego. Este bonus cambia de posición en cada interacción y cuando se descubre suma 5 puntos al puntaje del jugador. Si el bonus se descubre se le avisa al jugador y se vuelve a ubicar en las celdas que no han sido destapadas, siempre y cuando falten más del 20% de las celdas por destapar. El botón que destapó el bonus debe tener un icono que lo identifique
 4. Ajustar parametrización de dificultad para poder cambiar el tamaño del tablero predefinido por dificultad
 5. Ajustar parametrización inicial para activar o desactivar el autorefresco de la página. Por defecto debe estar desactivado

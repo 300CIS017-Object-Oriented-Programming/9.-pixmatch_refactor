@@ -1,7 +1,7 @@
 import json
 import os
 
-from settings import MAX_LEADERBOARD_PLAYERS, LEADERBOARD_FILE_NAME, FILES_PATH
+from settings import LEADERBOARD_FILE_NAME, FILES_PATH
 
 class LeaderBoardManager:
     """

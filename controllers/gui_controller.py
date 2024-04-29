@@ -70,9 +70,6 @@ class GUIController:
         # Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada
         # self.autorefresh_page()
 
-        # Verificar si el juego ha terminado o todavía sigue activo
-        self.game_controller.verify_game_status()
-
 
     def autorefresh_page(self):
         """

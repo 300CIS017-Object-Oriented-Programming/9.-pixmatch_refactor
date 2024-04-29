@@ -18,6 +18,7 @@ class GameController:
         self.target_emoji = None
         self.game_status = None
         self.board = None
+        self.leaderboard_ranking = {} # Diccionario con el ranking del leaderboard
         self.leaderboard_manager = LeaderBoardManager()
 
     def pick_emoji_bank(self):
@@ -102,8 +103,16 @@ class GameController:
 
 
     def new_game(self):
+
         # Reinicia el tablero del juego
         self.reset_board()
+
+        # Lee el leaderboard si se recibió el nombre del jugador
+        if self.current_player.player_name_country != "":
+            self.leaderboard_ranking = self.leaderboard_manager.read_leader_board()
+
+        # Verificar si el juego ha terminado o todavía sigue activo
+        self.verify_game_status()
 
     def play(self, cell_idx):
         """

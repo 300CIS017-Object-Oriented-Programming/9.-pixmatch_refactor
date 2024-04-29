@@ -7,7 +7,7 @@ from PIL import Image
 from streamlit_autorefresh import st_autorefresh
 
 from settings import HORIZONTAL_BAR_HTML_TEMPLATE, IMAGES_PATH, DIFFICULTY_LEVELS_OPTIONS, PURPLE_BUTTON_HTML_TEMPLATE, \
-    IMAGES_PATH, FILES_PATH, TARGET_EMOJI_HTML_TEMPLATE, PRESSED_EMOJI_HTML_TEMPLATE
+    IMAGES_PATH, FILES_PATH, TARGET_EMOJI_HTML_TEMPLATE, PRESSED_EMOJI_HTML_TEMPLATE, MAX_LEADERBOARD_PLAYERS
 
 
 def draw_instructions():
@@ -41,60 +41,62 @@ def draw_instructions():
     st.markdown(author_details, unsafe_allow_html=True)
     st.info("Modified by: Luisa Rincon")
 
+
 def draw_main_page(gui_controller):
+    # Ajustar el estilo de la barra lateral y los botones
+    st.markdown('<style>[data-testid="stSidebar"] > div:first-child {width: 310px;}</style>',
+                unsafe_allow_html=True, )  # reduce sidebar width
+    st.markdown(PURPLE_BUTTON_HTML_TEMPLATE, unsafe_allow_html=True)
 
-        # Ajustar el estilo de la barra lateral y los botones
-        st.markdown('<style>[data-testid="stSidebar"] > div:first-child {width: 310px;}</style>',
-                    unsafe_allow_html=True, )  # reduce sidebar width
-        st.markdown(PURPLE_BUTTON_HTML_TEMPLATE, unsafe_allow_html=True)
+    with st.sidebar:
+        st.subheader("🖼️ Pix Match:")
+        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
 
-        with st.sidebar:
-            st.subheader("🖼️ Pix Match:")
-            st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+        # Cargar y mostrar el logo del juego en la barra lateral
+        sidebar_logo = Image.open(IMAGES_PATH + 'sidebarlogo.jpg').resize((300, 390))
+        st.image(sidebar_logo, use_column_width='auto')
 
-            # Cargar y mostrar el logo del juego en la barra lateral
-            sidebar_logo = Image.open(IMAGES_PATH + 'sidebarlogo.jpg').resize((300, 390))
-            st.image(sidebar_logo, use_column_width='auto')
+    # Mostrar la página inicial con reglas e instrucciones
+    draw_instructions()
 
-        # Mostrar la página inicial con reglas e instrucciones
-        draw_instructions()
+    # Configuración de la barra lateral para entradas de usuario y opciones
+    with st.sidebar:
+        # Selección de nivel de dificultad
+        selected_difficulty = st.radio('Difficulty Level:', options=('Easy', 'Medium', 'Hard'), index=0,
+                                       horizontal=True, )
+        st.write(f'La dificultad seleccionada fue {selected_difficulty}')
+        # Entrada para el nombre del jugador y el país
+        player_name_country = st.text_input("Player Name, Country", placeholder='Shawn Pereira, India',
+                                            help='Optional input only for Leaderboard')
+        # Botón para iniciar un nuevo juego
+        if st.button(f"🕹️ New Game", use_container_width=True):
+            gui_controller.pre_new_game_gui(selected_difficulty, player_name_country)
 
-        # Configuración de la barra lateral para entradas de usuario y opciones
-        with st.sidebar:
-            # Selección de nivel de dificultad
-            selected_difficulty = st.radio('Difficulty Level:', options=('Easy', 'Medium', 'Hard'), index=0,
-                                           horizontal=True, )
-            st.write(f'La dificultad seleccionada fue {selected_difficulty}')
-            # Entrada para el nombre del jugador y el país
-            player_name_country = st.text_input("Player Name, Country", placeholder='Shawn Pereira, India',
-                                                help='Optional input only for Leaderboard')
-            # Botón para iniciar un nuevo juego
-            if st.button(f"🕹️ New Game", use_container_width=True):
-                gui_controller.pre_new_game_gui(selected_difficulty, player_name_country)
-
-            st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)  # Barra decorativa horizontal
+        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)  # Barra decorativa horizontal
 
 
 def draw_new_game_board(gui_controller):
+    reduce_gap_from_page_top('sidebar')
+    # Dibujar la barra lateral que tiene el emoji a buscar y el botón de regreso
+    draw_lateral_bar_new_game(gui_controller)
 
-        reduce_gap_from_page_top('sidebar')
-        # Dibujar la barra lateral que tiene el emoji a buscar y el botón de regreso
-        draw_lateral_bar_new_game(gui_controller)
-        st.subheader("Picture Positions:")
-        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
-        # Set Board Defaults
-        st.markdown("<style> div[class^='css-1vbkxwb'] > p { font-size: 1.5rem; } </style> ",
-                    unsafe_allow_html=True)  # make button face big
+    # Dibujar el ranking del leaderboard
+    draw_leaderboard_ranking(gui_controller)
 
-        # Dibujar la matriz del tablero
-        gui_controller.new_game_gui()
+    st.subheader("Picture Positions:")
+    st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+    # Set Board Defaults
+    st.markdown("<style> div[class^='css-1vbkxwb'] > p { font-size: 1.5rem; } </style> ",
+                unsafe_allow_html=True)  # make button face big
 
-        st.caption('')  # vertical filler
-        st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
+    # Dibujar la matriz del tablero
+    gui_controller.new_game_gui()
 
-        # Lógica para controlar mensajes de fin de juego cuando se ha terminado
-        draw_end_game_info(gui_controller)
+    st.caption('')  # vertical filler
+    st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
 
+    # Lógica para controlar mensajes de fin de juego cuando se ha terminado
+    draw_end_game_info(gui_controller)
 
 
 def draw_end_game_info(gui_controller):
@@ -114,7 +116,8 @@ def draw_end_game_info(gui_controller):
         tm.sleep(5)
         gui_controller.back_to_main()
     else:
-        pass # No se hace nada si el juego sigue activo
+        pass  # No se hace nada si el juego sigue activo
+
 
 def draw_lateral_bar_new_game(gui_controller):
     with st.sidebar:
@@ -129,21 +132,24 @@ def draw_lateral_bar_new_game(gui_controller):
         if st.button(f"🔙 Return to Main Page", use_container_width=True):
             gui_controller.back_to_main()
 
+
 def draw_leaderboard_ranking(gui_controller):
 
-     sc0, sc1, sc2, sc3 = st.columns((2, 3, 3, 3))
-     rknt = 0
-     leaderboard = gui_controller.game_controller.get_leaderboard()
-     for key in leaderboard:
-         rknt += 1
-         if rknt == 1:
-             sc0.write('🏆 Past winners:')
-             sc1.write(f"🥇 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
-         elif rknt == 2:
-             sc2.write(f"🥈 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
-         elif rknt == 3:
-             sc3.write(f"🥉 | {leaderboard[key]['NameCountry']}: {leaderboard[key]['HighestScore']}")
+    # Crear una lista con el ancho de las columnas
+    # La primera columna tiene un ancho fijo de 2
+    # Las columnas restantes tienen un ancho dinámico de 1
+    column_widths = [2] + [1] * MAX_LEADERBOARD_PLAYERS
 
+    # Crear las columnas en Streamlit
+    columns = st.columns(column_widths)
+
+    leaderboard = gui_controller.game_controller.leaderboard_ranking
+
+    #La primera columna enunciara el texto de ganadores por eso es columns[0
+    columns[0].write('🏆 Past winners:')
+    for idx, (key, value) in enumerate(leaderboard.items()):
+        if idx < MAX_LEADERBOARD_PLAYERS:
+            columns[idx+1].write(f"'🥇' | {value['NameCountry']}: {value['HighestScore']}")
 
 def reduce_gap_from_page_top(section_to_adjust):
     if section_to_adjust == 'main page':
@@ -156,5 +162,3 @@ def reduce_gap_from_page_top(section_to_adjust):
         # Ajusta el espacio tanto en la página principal como en la barra lateral
         st.markdown(" <style> div[class^='block-container'] { padding-top: 2rem; } </style> ", True)
         st.markdown(" <style> div[class^='st-emotion-cache-10oheav'] { padding-top: 0rem; } </style> ", True)
-
-
