@@ -22,9 +22,6 @@ class GameController:
         self.leaderboard_manager = LeaderBoardManager()
 
     def pick_emoji_bank(self):
-
-
-
         """
          Selecciona un banco de emojis basado en la dificultad seleccionada.
         """

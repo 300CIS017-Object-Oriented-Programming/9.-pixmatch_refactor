@@ -13,7 +13,15 @@ class Player:
         return f"Player: {self.player_name_country}, Score: {self.score}"
 
     def increase_score(self, difficulty_points):
+        """
+        Incrementa el puntaje del jugador según la dificultad del juego.
+        Args:
+            difficulty_points: cambian según el nivel de dificultad
+        """
         self.score += difficulty_points
 
     def decrease_score(self):
+        """
+        Decrementa el puntaje del jugador en 1 punto.
+        """
         self.score -= 1

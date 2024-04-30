@@ -137,3 +137,28 @@ classDiagram
 ```
 
 Editor:https://diagrams.helpful.dev/s/s:MAdFfNUs
+
+### Diagrama de secuencia que representa la interacción cuando se da click en new game
+```mermaid
+sequenceDiagram
+    participant GUIController as GUIController
+    participant GameController as GameController
+    participant Board as Board
+    participant main_view as main_view
+
+    GUIController->>GameController: pre_new_game(selected_difficulty, player_name_country)
+    GameController->>GameController: selected_difficulty = DIFFICULTY_LEVELS_OPTIONS[selected_difficulty]
+    GameController->>GameController: current_player = Player(player_name_country)
+    GameController->>Board: board = Board(selected_difficulty['board_size'])
+    GameController->>GameController: pick_emoji_bank()
+    GameController->>Board: prepare_board()
+    GameController->>GameController: game_status = 'ACTIVE'
+    GameController->>GameController: create_leader_board()
+    GUIController->>GUIController: run_page = 'new_game'
+    GUIController->>GUIController: rerun()
+    GUIController->>GameController: new_game()
+    GameController->>GameController: reset_board()
+    GameController->>GameController: read_leader_board()
+    GameController->>GameController: verify_game_status()
+    GUIController->>main_view: draw_new_game_board(self)
+```
