@@ -30,21 +30,10 @@ para favorcer la mantenibilidad del código fuente.
 
 ### Por hacer
 
-1. Agregar lógica para que si el jugador a fallado en más del 50% + 1 de las celdas el juego termine
-2. Ajuste el código para que el leaderboard sea de cuatro jugadores. Observe la diferencia entre ajustarlo en el código
-   anterior y en esta nueva versión de código. Note como un diseño mejorado facilita el mantenimiento
-2. Agregar nueva página para que cuando se gana se muestre una página con un mensaje grande que indica que el jugador ha
-   ganado y los globos. En esta página se debe mostrar el puntaje del jugador, y un botón para reiniciar un nuevo juego
-3. Agregar un bonus aleatorio en alguna celda del juego. Este bonus cambia de posición en cada interacción y cuando se
-   descubre suma 5 puntos al puntaje del jugador. Si el bonus se descubre se le avisa al jugador y se vuelve a ubicar en
-   las celdas que no han sido destapadas, siempre y cuando falten más del 20% de las celdas por destapar. El botón que
-   destapó el bonus debe tener un icono que lo identifique
-4. Ajustar parametrización de dificultad para poder cambiar el tamaño del tablero predefinido por dificultad
-5. Ajustar parametrización inicial para activar o desactivar el autorefresco de la página. Por defecto debe estar
-   desactivado
-6. **RETO:** Me gustaría que los botones que muestran los emojis fueran más grandes. Esto implica interacción con html. ¿Cómo
-   haría esto?
-
+1. Agregar caso de prueba que verifique el correcto funcionamiento de la asignación del emoji de la barra lateral en el tablero
+2. Agregar caso de prueba para verificar que cuando se pierde el status del juego cambia a 'LOST'.
+3. Agregar casos de prueba para clase Player
+4. Agregar casos de prueba a cualquiera de las clases ya existentes para los que falten casos de prueba
 ## Diagrama del proyecto
 
 ```mermaid

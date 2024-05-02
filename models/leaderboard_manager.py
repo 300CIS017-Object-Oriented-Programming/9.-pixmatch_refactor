@@ -25,8 +25,11 @@ class LeaderBoardManager:
 
         """
         if os.path.isfile(self.leaderboard_file_name_path):
-            leaderboard = json.load(open(self.leaderboard_file_name_path))
-            return leaderboard  # Se retorna el diccionario con el leaderboard
+
+            with open(self.leaderboard_file_name_path, 'r') as file:
+                leaderboard = json.load(file)
+                return leaderboard  # Se retorna el diccionario con el leaderboard
+            return None
         else:
             # Controla el caso en el que e lederboard no existe
             raise Exception("Leaderboard file does not exist")
