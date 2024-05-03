@@ -1,6 +1,6 @@
 FILES_PATH = './'  # Settings generales
 IMAGES_PATH = 'static/'  # Settings
-MAX_LEADERBOARD_PLAYERS = 5  # Settings
+MAX_LEADERBOARD_PLAYERS = 4  # Settings
 LEADERBOARD_FILE_NAME = 'leaderboard.json'  # Settings
 
 # Mapa que representa los niveles de dificultad del juego, con sus respectivas configuraciones.
