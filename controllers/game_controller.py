@@ -20,6 +20,7 @@ class GameController:
         self.board = None
         self.leaderboard_ranking = {}  # Diccionario con el ranking del leaderboard
         self.leaderboard_manager = LeaderBoardManager()
+        self.fails = None
 
     def pick_emoji_bank(self):
         """
@@ -82,6 +83,7 @@ class GameController:
                que aparecerán en el tablero según la dificultad del juego. Asegura que todos los botones de
                la cuadrícula estén configurados para el inicio de una nueva partida.
         """
+        self.fails = 0
         self.selected_difficulty = DIFFICULTY_LEVELS_OPTIONS[selected_difficulty]
         self.current_player = Player(player_name_country)
 
@@ -126,6 +128,7 @@ class GameController:
             self.current_player.increase_score(self.selected_difficulty['points_by_difficulty'])
         elif cell.verification_result == False:
             self.current_player.decrease_score()
+            self.fails += 1
 
         # Agrega la celda a la lista de celdas que ya fueron usadas
         self.board.add_expired_cell(cell_idx)
@@ -136,14 +139,18 @@ class GameController:
         Returns:
            'ACTIVE' si el juego sigue en curso, 'WIN' si el jugador ha ganado, 'LOOSE' si el jugador ha perdido.
         """
-        if self.board.count_pending_cells() == 0:
-            if self.current_player.score < 0:
-                self.game_status = 'LOOSE'
-            elif self.current_player.score > 0:
-                self.game_status = 'WIN'
-                # Actualiza el leaderboard solo si gana
-                self.leaderboard_manager.update_leader_board(player=self.current_player,
-                                                             MAX_PLAYERS=MAX_LEADERBOARD_PLAYERS)
+        # Obtiene el total de celdas del tablero
+        if self.fails > self.board.total_cells / 2 + 1:  # Verifica si el jugador ha fallado más del 50% + 1 de las celdas
+            self.game_status = 'LOOSE'
         else:
-            self.game_status = 'ACTIVE'
+            if self.board.count_pending_cells() == 0:
+                if self.current_player.score < 0:
+                    self.game_status = 'LOOSE'
+                elif self.current_player.score > 0:
+                    self.game_status = 'WIN'
+                    # Actualiza el leaderboard solo si gana
+                    self.leaderboard_manager.update_leader_board(player=self.current_player,
+                                                                 MAX_PLAYERS=MAX_LEADERBOARD_PLAYERS)
+            else:
+                self.game_status = 'ACTIVE'
         return self.game_status

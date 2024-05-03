@@ -1,9 +1,10 @@
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 
+#import view.main_view
 from controllers.game_controller import GameController
 from settings import PRESSED_EMOJI_HTML_TEMPLATE
-from view.main_view import draw_main_page, draw_new_game_board
+from view.main_view import draw_main_page, draw_new_game_board, draw_end_game_info
 
 
 class GUIController:
@@ -46,6 +47,7 @@ class GUIController:
             self.game_controller.new_game()
             draw_new_game_board(self)
 
+
     def pre_new_game_gui(self, selected_difficulty, player_name_country):
         # Inicializa el tablero
         self.game_controller.pre_new_game(selected_difficulty, player_name_country)
@@ -77,7 +79,8 @@ class GUIController:
                     st_cell_to_draw.markdown(
                         PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '❌'), unsafe_allow_html=True)
                 cell_cont += 1
-
+                # Verifica el estado del juego después de cada jugada
+                draw_end_game_info(self)
         # Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada
         # self.autorefresh_page()
 
