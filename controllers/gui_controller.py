@@ -47,6 +47,9 @@ class GUIController:
             self.game_controller.new_game()
             draw_new_game_board(self)
 
+        elif self.run_page == 'end_game':
+            draw_end_game_info(self)
+
 
     def pre_new_game_gui(self, selected_difficulty, player_name_country):
         # Inicializa el tablero
@@ -80,7 +83,8 @@ class GUIController:
                         PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '❌'), unsafe_allow_html=True)
                 cell_cont += 1
                 # Verifica el estado del juego después de cada jugada
-                draw_end_game_info(self)
+                if self.game_controller.game_status == 'LOOSE' or self.game_controller.game_status == 'WIN':
+                    self.go_to_end_page()
         # Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada
         # self.autorefresh_page()
 
@@ -140,4 +144,11 @@ class GUIController:
         Regresa a la página principal del juego.
         """
         st.session_state.my_state.run_page = 'main'
+        st.rerun()
+
+    def go_to_end_page(self):
+        """
+        Muestra la pagina final del juego cuando el jugador ha ganado o ha perdido
+        """
+        st.session_state.my_state.run_page = 'end_game'
         st.rerun()

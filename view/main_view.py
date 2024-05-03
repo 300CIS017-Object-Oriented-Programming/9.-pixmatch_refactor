@@ -94,28 +94,33 @@ def draw_new_game_board(gui_controller):
     st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
 
     # Lógica para controlar mensajes de fin de juego cuando se ha terminado
-    draw_end_game_info(gui_controller)
+    #draw_end_game_info(gui_controller)
 
 
-def draw_end_game_info(gui_controller):
+def draw_end_game_info(self):
     """
     Muestra un mensaje de victoria o derrota cuando termina el juego.
     """
-    if gui_controller.game_controller.game_status != 'ACTIVE':
+    if self.game_controller.game_status != 'ACTIVE':
+        # Limpia la página actual
+        st.sidebar.empty()
+        st.empty()
+
         # Mostrar mensaje de victoria o derrota
-        if gui_controller.game_controller.game_status == 'WIN':
+        if self.game_controller.game_status == 'WIN':
             st.success("🎉 You won! 🎉")
             st.balloons()
-            st.info(gui_controller.get_score_and_pending_cells_values())
+            st.info(self.get_score_and_pending_cells_values())
             st.markdown(HORIZONTAL_BAR_HTML_TEMPLATE, True)
-        elif gui_controller.game_controller.game_status == 'LOOSE':
+        elif self.game_controller.game_status == 'LOOSE':
             st.error("😢 You lost! 😢")
             st.snow()  # Muestra animación de nieve si el puntaje es cero o negativo
-        tm.sleep(5)
-        gui_controller.back_to_main()
+
+        # Muestra un botón para volver a la página principal
+        if st.button('Return to the main page'):
+            self.back_to_main()
     else:
         pass  # No se hace nada si el juego sigue activo
-
 
 def draw_lateral_bar_new_game(gui_controller):
     with st.sidebar:

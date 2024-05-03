@@ -146,6 +146,7 @@ class GameController:
             if self.board.count_pending_cells() == 0:
                 if self.current_player.score < 0:
                     self.game_status = 'LOOSE'
+
                 elif self.current_player.score > 0:
                     self.game_status = 'WIN'
                     # Actualiza el leaderboard solo si gana
