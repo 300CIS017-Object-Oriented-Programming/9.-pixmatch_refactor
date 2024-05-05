@@ -15,6 +15,7 @@ class GameController:
         self.selected_difficulty = None
         self.current_player = None
         self.emoji_bank = []
+        self.bonus_emoji_bank = []
         self.target_emoji = None
         self.game_status = None
         self.board = None
@@ -22,9 +23,10 @@ class GameController:
         self.leaderboard_manager = LeaderBoardManager()
         self.fails = None
 
-    def pick_emoji_bank(self):
+    def pick_emoji_banks(self):
         """
-         Selecciona un banco de emojis basado en la dificultad seleccionada.
+         Selecciona un banco para los emojis del juego y del
+         bonus basado en la dificultad seleccionada.
         """
         random.seed()
         # Version mejorada de la selección de categoría de emojis según la dificultad del juego
@@ -39,6 +41,14 @@ class GameController:
             # Define el banco de emojis
             self.emoji_bank = random.choice(difficulty_emoji_map[difficulty_name])
 
+        # Obtener el banco de emojis para el bonus
+        flag = False
+        # Ciclo que se encarga de seleccionar un banco de emojis diferente al del juego
+        while flag == False:
+            self.bonus_emoji_bank = random.choice(difficulty_emoji_map[difficulty_name])
+            if self.bonus_emoji_bank != self.emoji_bank:
+                flag = True
+
     def choose_sidebar_emoji(self):
         """
         Selecciona un emoji al azar para la barra lateral.
@@ -46,6 +56,20 @@ class GameController:
 
         sidebar_emoji_index = random.randint(0, len(self.emoji_bank) - 1)
         self.target_emoji = self.emoji_bank[sidebar_emoji_index]
+
+    def choose_bonus_emoji(self):
+        """
+        Selecciona una celda aleatoria de todas las celdas del tablero y le asigna el bonus y un emoji del banco de emojis del bonus.
+        """
+        # Obtiene una lista de todas las celdas del tablero
+        all_cells = list(range(self.board.total_cells))
+
+        # Selecciona una celda aleatoria de la lista
+        bonus_cell_idx = random.choice(all_cells)
+
+        # Marca la celda como bonus y le asigna un emoji del banco de emojis del bonus
+        self.board.cells_map[bonus_cell_idx].bonus = True
+        self.board.cells_map[bonus_cell_idx].bonus_emoji = random.choice(self.bonus_emoji_bank)
 
     def reset_board(self):
         """
@@ -91,7 +115,7 @@ class GameController:
         self.board = Board(self.selected_difficulty['board_size'])
 
         # Selecciona el banco de emojis
-        self.pick_emoji_bank()
+        self.pick_emoji_banks()
 
         # Reinicia la información de los botones del juego
         self.board.prepare_board()
@@ -102,6 +126,15 @@ class GameController:
         # Crea el leaderboard si no existe y el jugador puso el nombre
         if self.current_player.player_name_country != "":
             self.leaderboard_manager.create_leader_board()
+
+        # selecciona el emoji bonus de la partida
+        self.choose_bonus_emoji()
+
+        if not any(cell.emoji_img == self.target_emoji for cell in self.board.cells_map.values()):
+            # Si el emoji objetivo no está en el tablero, reemplaza el emoji de una celda aleatoria no presionada con el emoji objetivo
+            unpressed_cells = self.board.get_unpressed_cells()
+            target_cell_idx = random.choice(unpressed_cells)
+            self.board.cells_map[target_cell_idx].emoji_img = self.target_emoji
 
     def new_game(self):
 
@@ -123,12 +156,16 @@ class GameController:
             cell_idx:
         """
         cell = self.board.cells_map[cell_idx]
-        cell.verify_emoji_match(self.target_emoji)
-        if cell.verification_result == True:
-            self.current_player.increase_score(self.selected_difficulty['points_by_difficulty'])
-        elif cell.verification_result == False:
-            self.current_player.decrease_score()
-            self.fails += 1
+        if cell.bonus:  # Si la celda es una celda de bonificación
+            cell.verification_result = True
+            self.current_player.increase_score(5)
+        else:
+            cell.verify_emoji_match(self.target_emoji)
+            if cell.verification_result == True:
+                self.current_player.increase_score(self.selected_difficulty['points_by_difficulty'])
+            elif cell.verification_result == False:
+                self.current_player.decrease_score()
+                self.fails += 1
 
         # Agrega la celda a la lista de celdas que ya fueron usadas
         self.board.add_expired_cell(cell_idx)

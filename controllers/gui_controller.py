@@ -16,7 +16,7 @@ class GUIController:
             # Agregar las variables que necesitan
 
             self.run_page = 'main'  # Asigna el método main a la variable run_page para ejecutarse
-            self.st_matrix ={} # Controla las columnas y fila a dibujar en streamlit
+            self.st_matrix = {}  # Controla las columnas y fila a dibujar en streamlit
             # Variable necesaria para mantener el estado
             st.session_state['my_state'] = self
 
@@ -50,7 +50,6 @@ class GUIController:
         elif self.run_page == 'end_game':
             draw_end_game_info(self)
 
-
     def pre_new_game_gui(self, selected_difficulty, player_name_country):
         # Inicializa el tablero
         self.game_controller.pre_new_game(selected_difficulty, player_name_country)
@@ -66,19 +65,28 @@ class GUIController:
         # Agrega los botones a las columnas segun corresponda en el juego
         for row in range(self.game_controller.board.board_size):
             st_row_to_draw = self.st_matrix[row]
+
             for col in range(self.game_controller.board.board_size):
                 cell_to_draw = self.game_controller.board.cells_map[cell_cont]
                 st_cell_to_draw = st_row_to_draw[col].empty()
                 if cell_to_draw.verification_result is None:
-                    vemoji = cell_to_draw.emoji_img
+                    if cell_to_draw.bonus:  # Si la celda es una celda de bonificación
+                        vemoji = cell_to_draw.bonus_emoji
+                    else:
+                        vemoji = cell_to_draw.emoji_img
                     st_cell_to_draw.button(vemoji, on_click=self.game_controller.play,
                                            args=(cell_cont,),
                                            key=f"B{cell_cont}")
                 elif cell_to_draw.verification_result == True:
-                    st_cell_to_draw.markdown(
-                        PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '✅️'), unsafe_allow_html=True)
+                    if cell_to_draw.bonus == True:  # Si la celda es una celda de bonificación
+                        st_cell_to_draw.markdown(
+                            PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '🎁'), unsafe_allow_html=True)
+                        st.info("¡Has encontrado el emoji de bonificación!")
+                    else:
+                        st_cell_to_draw.markdown(
+                            PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '✅️'), unsafe_allow_html=True)
 
-                elif cell_to_draw.verification_result == False:
+                elif cell_to_draw.verification_result == False and not cell_to_draw.bonus:
                     st_cell_to_draw.markdown(
                         PRESSED_EMOJI_HTML_TEMPLATE.replace('|fill_variable|', '❌'), unsafe_allow_html=True)
                 cell_cont += 1
