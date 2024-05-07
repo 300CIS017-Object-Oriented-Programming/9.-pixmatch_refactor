@@ -10,6 +10,7 @@ from view.main_view import draw_main_page, draw_new_game_board, draw_end_game_in
 class GUIController:
     def __init__(self):
 
+        self.autorefresh_enabled = False
         if 'my_state' not in st.session_state:
 
             self.game_controller = GameController()
@@ -19,6 +20,8 @@ class GUIController:
             self.st_matrix = {}  # Controla las columnas y fila a dibujar en streamlit
             # Variable necesaria para mantener el estado
             st.session_state['my_state'] = self
+            # Variable para controlar el autorefrescamiento de la página
+
 
         else:
             # Si ya existe en la sesión, entonces actualiza los valores
@@ -94,18 +97,20 @@ class GUIController:
                 if self.game_controller.game_status == 'LOOSE' or self.game_controller.game_status == 'WIN':
                     self.go_to_end_page()
         # Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada
-        # self.autorefresh_page()
+        self.autorefresh_page()
 
     def autorefresh_page(self):
         """
         Lógica para autorefrescar la página y cambiar el score si pasado un tiempo no se ha seleccionado nada.
         """
-        # Temporizador de autorefrescamiento que resta puntos si el tiempo se agota pendiente por agregar
-        aftimer = st_autorefresh(interval=(self.get_refresh_interval()), key="aftmr")
+        # Verifica si el autorefresco está activado antes de ejecutarlo
+        if self.autorefresh_enabled:
+            # Temporizador de autorefrescamiento que resta puntos si el tiempo se agota pendiente por agregar
+            timer = st_autorefresh(interval=(self.get_refresh_interval()), key="aftmr")
 
-        if aftimer > 0:
-            # Se agotó el tiempo para seleccionar un emoji, entonces reduce el puntaje del jugador
-            self.game_controller.current_player.decrease_score()
+            if timer > 0:
+                # Se agotó el tiempo para seleccionar un emoji, entonces reduce el puntaje del jugador
+                self.game_controller.current_player.decrease_score()
 
     def get_emoji_for_score(self):
         """
