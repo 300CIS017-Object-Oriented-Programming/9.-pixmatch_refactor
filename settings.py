@@ -55,7 +55,7 @@ EMOJIS_CATEGORIES_HARD = ['FOXES', 'EMOJIS', 'HUMANS', 'FOODS', 'CLOCKS', 'HANDS
 # HTML templates
 
 # Devuelve una cadena HTML formateada con un emoji grande para la interfaz principal del juego.
-TARGET_EMOJI_HTML_TEMPLATE = """<span style='font-size: 140px;
+TARGET_EMOJI_HTML_TEMPLATE = """<span style='font-size: 170px;
                       border-radius: 7px;
                       text-align: center;
                       display:inline;
@@ -68,7 +68,7 @@ TARGET_EMOJI_HTML_TEMPLATE = """<span style='font-size: 140px;
                       </span>"""
 
 # Devuelve una cadena HTML formateada para un emoji presionado, utilizado en la interfaz del juego.
-PRESSED_EMOJI_HTML_TEMPLATE = """<span style='font-size: 24px;
+PRESSED_EMOJI_HTML_TEMPLATE = """<span style='font-size: 30px;
                                 border-radius: 7px;
                                 text-align: center;
                                 display:inline;
