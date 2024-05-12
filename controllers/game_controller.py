@@ -1,9 +1,11 @@
 import random
 
 from models.board import Board
-from models.board_cell import BoardCell
+from models.leaderboard_manager import LeaderBoardManager
 from models.player import Player
-from settings import EMOJIS_CATEGORIES_EASY, EMOJIS_CATEGORIES_MEDIUM, EMOJIS_CATEGORIES_HARD, DIFFICULTY_LEVELS_OPTIONS
+from settings import EMOJIS_CATEGORIES_EASY, EMOJIS_CATEGORIES_MEDIUM, EMOJIS_CATEGORIES_HARD, \
+    DIFFICULTY_LEVELS_OPTIONS, MAX_LEADERBOARD_PLAYERS
+
 
 class GameController:
     def __init__(self):
@@ -13,13 +15,18 @@ class GameController:
         self.selected_difficulty = None
         self.current_player = None
         self.emoji_bank = []
+        self.bonus_emoji_bank = []
         self.target_emoji = None
         self.game_status = None
         self.board = None
+        self.leaderboard_ranking = {}  # Diccionario con el ranking del leaderboard
+        self.leaderboard_manager = LeaderBoardManager()
+        self.fails = None
 
-    def pick_emoji_bank(self):
+    def pick_emoji_banks(self):
         """
-         Selecciona un banco de emojis basado en la dificultad seleccionada.
+         Selecciona un banco para los emojis del juego y del
+         bonus basado en la dificultad seleccionada.
         """
         random.seed()
         # Version mejorada de la selección de categoría de emojis según la dificultad del juego
@@ -34,6 +41,14 @@ class GameController:
             # Define el banco de emojis
             self.emoji_bank = random.choice(difficulty_emoji_map[difficulty_name])
 
+        # Obtener el banco de emojis para el bonus
+        flag = False
+        # Ciclo que se encarga de seleccionar un banco de emojis diferente al del juego
+        while flag == False:
+            self.bonus_emoji_bank = random.choice(difficulty_emoji_map[difficulty_name])
+            if self.bonus_emoji_bank != self.emoji_bank:
+                flag = True
+
     def choose_sidebar_emoji(self):
         """
         Selecciona un emoji al azar para la barra lateral.
@@ -42,35 +57,46 @@ class GameController:
         sidebar_emoji_index = random.randint(0, len(self.emoji_bank) - 1)
         self.target_emoji = self.emoji_bank[sidebar_emoji_index]
 
+    def choose_bonus_emoji(self):
+        """
+        Selecciona una celda aleatoria de todas las celdas del tablero y le asigna el bonus y un emoji del banco de emojis del bonus.
+        """
+        # Obtiene una lista de todas las celdas del tablero
+        all_cells = list(range(self.board.total_cells))
+
+        # Selecciona una celda aleatoria de la lista
+        bonus_cell_idx = random.choice(all_cells)
+
+        # Marca la celda como bonus y le asigna un emoji del banco de emojis del bonus
+        self.board.cells_map[bonus_cell_idx].bonus = True
+        self.board.cells_map[bonus_cell_idx].bonus_emoji = random.choice(self.bonus_emoji_bank)
+
     def reset_board(self):
         """
             Reinicia el tablero del juego, configurando emojis aleatorios en cada celda de la cuadrícula,
             y asegurándose de que el emoji de la barra lateral esté presente al menos una vez en el tablero.
             """
-
-        # Define el emoji que se buscará
+        # Seleccionar un emoji para la barra lateral de forma aleatoria
         self.choose_sidebar_emoji()
+
         sidebar_emoji_in_list = False  # Controla si el emoji de la barra lateral está en el tablero
 
-        """ FIXME. Separar esta lógica para que la clase board haga algunas partes. PUede hacer ajustes sobre las clases propuestas
-        # Configurar emojis para cada celda del tablero
-        for vcell in range(1, self.board.total_cells + 1):
-            if not mystate.plyrbtns[vcell]['isPressed']:  # Solo cambia los emojis de celdas no presionadas
-                emoji_index = random.randint(0, len(mystate.emoji_bank) - 1)
-                vemoji = mystate.emoji_bank[emoji_index]
-                mystate.plyrbtns[vcell]['eMoji'] = vemoji
-
-                if vemoji == mystate.sidebar_emoji:
-                    sidebar_emoji_in_list = True
+        # Configurar emojis para cada celda del tablero que no ha sido presionada
+        unpressed_cells_list = self.board.get_unpressed_cells()
+        for unpressed_cell in unpressed_cells_list:
+            emoji_index = random.randint(0, len(self.emoji_bank) - 1)
+            emoji = self.emoji_bank[emoji_index]
+            # Actualiza el emoji de la celda
+            self.board.cells_map[unpressed_cell].emoji_img = emoji
+            if emoji == self.target_emoji:
+                sidebar_emoji_in_list = True
 
         # Asegurar que el emoji de la barra lateral está al menos una vez en el tablero
         if not sidebar_emoji_in_list:
-            unpressed_cells = [cell for cell in range(1, (total_cells_per_row_or_col ** 2) + 1)
-                               if not mystate.plyrbtns[cell]['isPressed']]
-            if unpressed_cells:
-                selected_cell = random.choice(unpressed_cells)
-                mystate.plyrbtns[selected_cell]['eMoji'] = mystate.sidebar_emoji
-        """
+            if len(self.board.get_unpressed_cells()) > 0:
+                selected_cell = random.choice(unpressed_cells_list)
+                # Asigna el emoji de la barra lateral a la celda seleccionada
+                self.board.cells_map[selected_cell].emoji_img = self.target_emoji
 
     def pre_new_game(self, selected_difficulty, player_name_country):
         """
@@ -81,6 +107,7 @@ class GameController:
                que aparecerán en el tablero según la dificultad del juego. Asegura que todos los botones de
                la cuadrícula estén configurados para el inicio de una nueva partida.
         """
+        self.fails = 0
         self.selected_difficulty = DIFFICULTY_LEVELS_OPTIONS[selected_difficulty]
         self.current_player = Player(player_name_country)
 
@@ -88,33 +115,80 @@ class GameController:
         self.board = Board(self.selected_difficulty['board_size'])
 
         # Selecciona el banco de emojis
-        self.pick_emoji_bank()
+        self.pick_emoji_banks()
 
         # Reinicia la información de los botones del juego
-        # FIXME pasar esto para la clase Board, por principio de responsabilidad, esta logica es mas del Board que del controller
-        cont_row = 1
-        cont_col = 1
-        for vcell in range(1, self.board.total_cells + 1):
-            # Crea un objeto de celda y lo agrega al mapa de celdas del tablero
-            self.board.cells_map[vcell] = BoardCell(cell_idx=vcell, row=cont_row, col=cont_col)
-            cont_col += 1
-            if cont_col > self.selected_difficulty['board_size']:
-                cont_col = 1  # Reinicia el contador de columnnas cada vez que termina una fila
-                cont_row += 1  # Incrementa el contador de filas para indicar que va en la fila siguiente
+        self.board.prepare_board()
 
+        # Indica que el juego esta activo
         self.game_status = 'ACTIVE'
+
+        # Crea el leaderboard si no existe y el jugador puso el nombre
+        if self.current_player.player_name_country != "":
+            self.leaderboard_manager.create_leader_board()
+
+        # selecciona el emoji bonus de la partida
+        self.choose_bonus_emoji()
+
+        if not any(cell.emoji_img == self.target_emoji for cell in self.board.cells_map.values()):
+            # Si el emoji objetivo no está en el tablero, reemplaza el emoji de una celda aleatoria no presionada con el emoji objetivo
+            unpressed_cells = self.board.get_unpressed_cells()
+            target_cell_idx = random.choice(unpressed_cells)
+            self.board.cells_map[target_cell_idx].emoji_img = self.target_emoji
 
     def new_game(self):
 
         # Reinicia el tablero del juego
         self.reset_board()
 
-        # Faltan el resto de elementos
-        # Tome la logica de newgame de la versión legacy y adaptela para que se ajuste a la estructura de clases definida en este proyecto
-        pass
+        # Lee el leaderboard si se recibió el nombre del jugador
+        if self.current_player.player_name_country != "":
+            self.leaderboard_ranking = self.leaderboard_manager.read_leader_board()
 
-    def verify_game_status(self):
-        pass
+        # Verificar si el juego ha terminado o todavía sigue activo
+        self.verify_game_status()
 
     def play(self, cell_idx):
-        pass
+        """
+        Verifica si el emoji seleccionado por el jugador coincide con el emoji objetivo.
+        Actualiza el puntaje del jugador en consecuencia.
+        Args:
+            cell_idx:
+        """
+        cell = self.board.cells_map[cell_idx]
+        if cell.bonus:  # Si la celda es una celda de bonificación
+            cell.verification_result = True
+            self.current_player.increase_score(5)
+        else:
+            cell.verify_emoji_match(self.target_emoji)
+            if cell.verification_result == True:
+                self.current_player.increase_score(self.selected_difficulty['points_by_difficulty'])
+            elif cell.verification_result == False:
+                self.current_player.decrease_score()
+                self.fails += 1
+
+        # Agrega la celda a la lista de celdas que ya fueron usadas
+        self.board.add_expired_cell(cell_idx)
+
+    def verify_game_status(self):
+        """
+             Verifica si el juego sigue en curso, si el jugador ha ganado o perdido.
+        Returns:
+           'ACTIVE' si el juego sigue en curso, 'WIN' si el jugador ha ganado, 'LOOSE' si el jugador ha perdido.
+        """
+        # Obtiene el total de celdas del tablero
+        if self.fails > self.board.total_cells / 2 + 1:  # Verifica si el jugador ha fallado más del 50% + 1 de las celdas
+            self.game_status = 'LOOSE'
+        else:
+            if self.board.count_pending_cells() == 0:
+                if self.current_player.score < 0:
+                    self.game_status = 'LOOSE'
+
+                elif self.current_player.score > 0:
+                    self.game_status = 'WIN'
+                    # Actualiza el leaderboard solo si gana
+                    self.leaderboard_manager.update_leader_board(player=self.current_player,
+                                                                 MAX_PLAYERS=MAX_LEADERBOARD_PLAYERS)
+            else:
+                self.game_status = 'ACTIVE'
+        return self.game_status
