@@ -75,15 +75,7 @@
 - Al presionar el botón de reinicio, el estado del juego debe volver a su estado inicial.
 - Debe ser posible reiniciar la configuración de dificultad y otros ajustes.
 
-### 10. Detección de Imágenes Duplicadas en el Tablero
-**Requisito:** El sistema debe evitar que se generen imágenes duplicadas en el tablero inicial.
-
-**Criterios de Aceptación:**
-- Al iniciar el juego, ninguna imagen en el tablero debe repetirse.
-- Se debe verificar que cada imagen en el tablero sea única antes de que comience el juego.
-- i se detecta una imagen duplicada, el sistema debe reemplazarla con otra imagen aleatoria.
-
-### 11. Finalización del Juego
+### 10. Finalización del Juego
 **Requisito:** El sistema debe determinar el momento donde se ha completado el juego y muestra una animación de globos o nieve dependiendo de la puntuación del jugador.
 
 **Criterios de Aceptación:**
